@@ -1,91 +1,63 @@
 @import "tailwindcss";
 
 /*
-  Design-Grundlage: Schwarz-Weiß, Serifenschrift, Linien statt Flächen.
-  Alle Farben, Schriften und Größen stehen hier an einer Stelle.
-  Die Standardfarben, Rundungen und Schatten von Tailwind sind bewusst abgeschaltet,
+  Design-Grundlage: Flat Design.
+  Keine Schatten, keine Texturen, keine Verläufe auf Elementen.
+  Hierarchie entsteht durch Farbe, Größe und Schrift.
+  Alle Farben stehen hier. Tailwinds Standardfarben und Schatten sind abgeschaltet,
   damit nichts Fremdes ins Design rutscht.
 */
 @theme {
   --color-*: initial;
-  --radius-*: initial;
   --shadow-*: initial;
+  --inset-shadow-*: initial;
+  --drop-shadow-*: initial;
 
-  /* Schwarz-Weiß */
+  /* Grundfarben */
   --color-weiss: #ffffff;
-  --color-schwarz: #000000;
-  --color-flaeche: #f5f5f5;
-  --color-leise: #525252;
-  --color-linie: #e5e5e5;
+  --color-dunkel: #111827;
+  --color-leise: #4b5563;
+  --color-flaeche: #f3f4f6;
+  --color-flaeche-dunkel: #e5e7eb;
 
-  /* Die einzige Farbe: die Ampel. Immer zusammen mit Symbol und Wort zeigen. */
-  --color-ampel-rot: #b3261e;
-  --color-ampel-gelb: #c68a12;
-  --color-ampel-gruen: #2e7d4f;
-  --color-ampel-neu: #a3a3a3;
+  /* Aktionsfarbe Blau. "primaer" ist etwas dunkler als #3B82F6,
+     damit weiße Schrift darauf gut lesbar ist (Kontrast nach WCAG AA). */
+  --color-primaer: #2563eb;
+  --color-primaer-dunkel: #1d4ed8;
+  --color-primaer-leuchtend: #3b82f6;
+  --color-primaer-hell: #eff6ff;
 
-  /* Schriften (in layout.tsx geladen) */
-  --font-display: var(--font-playfair), Georgia, serif;
-  --font-serif: var(--font-source-serif), Georgia, serif;
-  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+  /* Akzente für die Startseite */
+  --color-sekundaer: #10b981;
+  --color-sekundaer-hell: #ecfdf5;
+  --color-akzent: #f59e0b;
+  --color-akzent-hell: #fffbeb;
 
-  /* Große Überschriften größer als bei Tailwind üblich */
-  --text-5xl: 3.5rem;
-  --text-5xl--line-height: 1;
-  --text-6xl: 4.5rem;
-  --text-6xl--line-height: 1;
-  --text-7xl: 6rem;
-  --text-7xl--line-height: 1;
-  --text-8xl: 8rem;
-  --text-8xl--line-height: 1;
-  --text-9xl: 10rem;
-  --text-9xl--line-height: 1;
+  /* Ampel. Immer zusammen mit Symbol und Wort zeigen (farbenblind-tauglich). */
+  --color-ampel-rot: #dc2626;
+  --color-ampel-gelb: #f59e0b;
+  --color-ampel-gruen: #10b981;
+  --color-ampel-neu: #9ca3af;
+
+  /* Fehlermeldungen im Formular (dunkler als Ampel-Rot, damit Text gut lesbar ist) */
+  --color-fehler: #b91c1c;
+
+  --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
 }
 
 body {
   background: var(--color-weiss);
-  color: var(--color-schwarz);
-  font-family: var(--font-serif);
+  color: var(--color-dunkel);
+  font-family: var(--font-sans);
 }
 
-/* Feine Papier-Struktur über der ganzen Seite: waagerechte Linien + Rauschen */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 50;
-  background-image:
-    repeating-linear-gradient(0deg, transparent, transparent 1px, #000 1px, #000 2px),
-    url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 100% 4px, 256px 256px;
-  opacity: 0.02;
-}
-
-/* Tastatur-Fokus: dicker schwarzer Rahmen, nur bei Tastaturbedienung */
+/* Tastatur-Fokus: klarer blauer Rahmen, nur bei Tastaturbedienung */
 :focus-visible {
-  outline: 3px solid var(--color-schwarz);
-  outline-offset: 3px;
+  outline: 2px solid var(--color-primaer-leuchtend);
+  outline-offset: 2px;
 }
 
-/* Senkrechte Linien für schwarze Flächen */
-@utility textur-senkrecht {
-  position: relative;
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background-image: repeating-linear-gradient(90deg, transparent, transparent 1px, #fff 1px, #fff 2px);
-    background-size: 4px 100%;
-    opacity: 0.03;
-  }
-}
-
-/* Feines Raster für ruhige Inhaltsbereiche */
-@utility textur-raster {
-  background-image:
-    linear-gradient(#0000000a 1px, transparent 1px),
-    linear-gradient(90deg, #0000000a 1px, transparent 1px);
-  background-size: 40px 40px;
+/* Auf farbigen Flächen ist der Fokus-Rahmen weiß */
+.auf-farbe :focus-visible {
+  outline-color: var(--color-weiss);
 }
