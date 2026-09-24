@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+/* Farben an einer Stelle. Nutzbar als z. B. bg-akzent, text-akzent. */
+@theme inline {
+  --color-hintergrund: #ffffff;
+  --color-text: #1c2526;
+  --color-text-leise: #5b6b6d;
+  --color-akzent: #0f6e6e;
+  --color-akzent-dunkel: #0b5454;
+  --color-akzent-hell: #e6f2f1;
+  --font-sans: var(--font-geist-sans);
+}
+
+body {
+  background: var(--color-hintergrund);
+  color: var(--color-text);
+}
