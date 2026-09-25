@@ -19,7 +19,8 @@ const y = (wert: number) => RAND.oben + ((5 - wert) * (H - RAND.oben - RAND.unte
 // Vier kleine Verlaufskurven (je eine pro Skala) über die letzten 8 Wochen.
 // Verpasste Wochen bleiben als Lücke sichtbar.
 export function Verlauf({ checkins, heute }: { checkins: Checkin[]; heute: string }) {
-  const letzteWoche = letzterFaelligkeitstag(heute);
+  // Letzte Woche im Diagramm: der letzte Fälligkeitstag, oder ein schon eingereichter Check-in für die laufende Woche
+  const letzteWoche = [letzterFaelligkeitstag(heute), ...checkins.map((c) => c.woche)].sort().at(-1)!;
   const wochen = Array.from({ length: WOCHEN }, (_, i) => plusTage(letzteWoche, -7 * (WOCHEN - 1 - i)));
   const proWoche = wochen.map((w) => checkins.find((c) => c.woche === w));
 

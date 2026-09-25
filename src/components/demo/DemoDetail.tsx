@@ -2,13 +2,12 @@
 
 import { KundenDetail } from "@/components/coach/KundenDetail";
 import { ButtonLink } from "@/components/ui/Button";
-import { demoDaten } from "@/demo/demoDaten";
-import { useHeute } from "@/lib/useHeute";
+import { useDemoDaten } from "@/demo/useDemoDaten";
 
 export function DemoDetail({ id }: { id: string }) {
-  const heute = useHeute();
-  if (!heute) return null;
-  const { kunden, checkins } = demoDaten(heute);
+  const daten = useDemoDaten();
+  if (!daten) return null;
+  const { heute, kunden, checkins } = daten;
   const kunde = kunden.find((k) => k.id === id);
   if (!kunde) {
     return (

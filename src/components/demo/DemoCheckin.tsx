@@ -1,31 +1,36 @@
 "use client";
 
-import { RotateCcw } from "lucide-react";
+import { ArrowRight, RotateCcw } from "lucide-react";
 import { CheckinFormular } from "@/components/checkin/CheckinFormular";
 import { Button, ButtonLink } from "@/components/ui/Button";
+import { speichereDemoCheckin } from "@/demo/useDemoDaten";
 
-// Das Formular in der Demo: Es wird nichts gespeichert.
+// Das Formular in der Demo: Der Check-in landet nur in diesem Browser-Tab.
 export function DemoCheckin() {
   return (
     <CheckinFormular
-      onAbsenden={async () => {
+      onAbsenden={async (eingabe) => {
         // kurze Pause, damit sich das Absenden echt anfühlt
         await new Promise((fertig) => setTimeout(fertig, 600));
+        speichereDemoCheckin(eingabe);
       }}
       nachDemAbsenden={(neuStarten) => (
         <div className="rounded-lg bg-primaer-hell p-6">
-          <p className="text-lg leading-relaxed">
-            In der Demo wird nichts gespeichert. Bald siehst du deinen Check-in hier direkt in der
-            Coach-Übersicht.
+          <p className="text-lg font-semibold">
+            Jetzt die Seite wechseln: So sieht dein Coach deinen Check-in.
+          </p>
+          <p className="mt-2 leading-relaxed text-leise">
+            Dein Check-in ist nur in diesem Browser-Tab gespeichert und verschwindet, wenn du ihn schließt.
           </p>
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-            <Button variante="primaer" onClick={neuStarten}>
+            <ButtonLink href="/demo" variante="primaer">
+              In der Coach-Übersicht ansehen
+              <ArrowRight size={20} strokeWidth={2.5} aria-hidden="true" />
+            </ButtonLink>
+            <Button variante="sekundaer" onClick={neuStarten}>
               <RotateCcw size={20} strokeWidth={2.5} aria-hidden="true" />
               Nochmal ausfüllen
             </Button>
-            <ButtonLink href="/" variante="sekundaer">
-              Zur Startseite
-            </ButtonLink>
           </div>
         </div>
       )}
