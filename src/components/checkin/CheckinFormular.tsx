@@ -18,6 +18,7 @@ import {
 import { Frageblock } from "./Frageblock";
 import { Skala } from "./Skala";
 import { Textfeld } from "./Textfeld";
+import { WochenZahlen } from "./WochenZahlen";
 import { Zaehler } from "./Zaehler";
 
 const GESUNDHEITS_HINWEIS = "Bitte keine Gesundheitsangaben wie Verletzungen oder Diagnosen.";
@@ -282,14 +283,6 @@ function Bestaetigung({
   eingabe: CheckinEingabe;
   children?: ReactNode;
 }) {
-  const zusammenfassung = [
-    { name: "Trainings", wert: `${eingabe.trainingsGeschafft} / ${eingabe.trainingsGeplant}` },
-    { name: "Energie", wert: eingabe.energie },
-    { name: "Schlaf", wert: eingabe.schlaf },
-    { name: "Stress", wert: eingabe.stress },
-    { name: "Motivation", wert: eingabe.motivation },
-  ];
-
   return (
     <div>
       <section className="relative overflow-hidden bg-sekundaer text-dunkel">
@@ -309,14 +302,9 @@ function Bestaetigung({
 
       <div className="mx-auto max-w-xl px-4 py-10">
         <h2 className="text-sm font-semibold uppercase tracking-wider text-leise">Deine Woche in Zahlen</h2>
-        <dl className="mt-4 grid grid-cols-3 gap-3 sm:grid-cols-5">
-          {zusammenfassung.map((eintrag) => (
-            <div key={eintrag.name} className="rounded-md bg-flaeche p-3 text-center">
-              <dt className="text-xs font-semibold uppercase tracking-wider text-leise">{eintrag.name}</dt>
-              <dd className="mt-1 text-2xl font-extrabold tabular-nums">{eintrag.wert}</dd>
-            </div>
-          ))}
-        </dl>
+        <div className="mt-4">
+          <WochenZahlen eingabe={eingabe} />
+        </div>
         {children && <div className="mt-10">{children}</div>}
       </div>
     </div>

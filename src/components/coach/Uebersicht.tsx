@@ -1,4 +1,5 @@
 import { MessageCircleQuestion } from "lucide-react";
+import Link from "next/link";
 import { AmpelMarke, ampelStufen, type AmpelStufe } from "@/components/AmpelMarke";
 import { bewerte, sortiereNachAmpel } from "@/lib/ampel";
 import type { Checkin, Kunde } from "@/lib/checkin";
@@ -16,10 +17,12 @@ export function Uebersicht({
   kunden,
   checkins,
   heute,
+  basis,
 }: {
   kunden: Kunde[];
   checkins: Checkin[];
   heute: string;
+  basis: string; // "/demo" oder "/coach"
 }) {
   const eintraege = sortiereNachAmpel(
     kunden.filter((k) => !k.archiviert).map((kunde) => ({ kunde, ampel: bewerte(kunde, checkins, heute) })),
@@ -47,35 +50,40 @@ export function Uebersicht({
 
       <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {eintraege.map(({ kunde, ampel }) => (
-          <li key={kunde.id} className="flex flex-col overflow-hidden rounded-lg bg-weiss">
-            <div aria-hidden="true" className={`h-2 ${streifen[ampel.stufe]}`} />
-            <div className="flex flex-1 flex-col p-6">
-              <div className="flex items-start justify-between gap-3">
-                <h2 className="text-2xl font-bold tracking-tight">{kunde.name}</h2>
-                <AmpelMarke stufe={ampel.stufe} />
-              </div>
-              <p className="mt-3 text-lg font-medium leading-snug">
-                <span className="sr-only">{ampelStufen[ampel.stufe].wort}: </span>
-                {ampel.gruende[0]}
-                {ampel.gruende.length > 1 && (
-                  <span className="text-leise"> · +{ampel.gruende.length - 1} weitere</span>
-                )}
-              </p>
-              <div className="mt-auto flex flex-wrap items-center gap-2 pt-5 text-sm">
-                {ampel.offen && (
-                  <span className="rounded-full bg-flaeche px-3 py-1 font-semibold">Check-in offen</span>
-                )}
-                {ampel.frage && (
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-primaer-hell px-3 py-1 font-semibold text-primaer">
-                    <MessageCircleQuestion size={16} strokeWidth={2.5} aria-hidden="true" />
-                    Frage an dich
+          <li key={kunde.id}>
+            <Link
+              href={`${basis}/kunde/${kunde.id}`}
+              className="flex h-full flex-col overflow-hidden rounded-lg bg-weiss transition-all duration-200 hover:scale-[1.02]"
+            >
+              <div aria-hidden="true" className={`h-2 ${streifen[ampel.stufe]}`} />
+              <div className="flex flex-1 flex-col p-6">
+                <div className="flex items-start justify-between gap-3">
+                  <h2 className="text-2xl font-bold tracking-tight">{kunde.name}</h2>
+                  <AmpelMarke stufe={ampel.stufe} />
+                </div>
+                <p className="mt-3 text-lg font-medium leading-snug">
+                  <span className="sr-only">{ampelStufen[ampel.stufe].wort}: </span>
+                  {ampel.gruende[0]}
+                  {ampel.gruende.length > 1 && (
+                    <span className="text-leise"> · +{ampel.gruende.length - 1} weitere</span>
+                  )}
+                </p>
+                <div className="mt-auto flex flex-wrap items-center gap-2 pt-5 text-sm">
+                  {ampel.offen && (
+                    <span className="rounded-full bg-flaeche px-3 py-1 font-semibold">Check-in offen</span>
+                  )}
+                  {ampel.frage && (
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-primaer-hell px-3 py-1 font-semibold text-primaer">
+                      <MessageCircleQuestion size={16} strokeWidth={2.5} aria-hidden="true" />
+                      Frage an dich
+                    </span>
+                  )}
+                  <span className="ml-auto text-leise">
+                    {ampel.letzter ? `Zuletzt ${datumKurz(ampel.letzter.woche)}` : "Noch kein Check-in"}
                   </span>
-                )}
-                <span className="ml-auto text-leise">
-                  {ampel.letzter ? `Zuletzt ${datumKurz(ampel.letzter.woche)}` : "Noch kein Check-in"}
-                </span>
+                </div>
               </div>
-            </div>
+            </Link>
           </li>
         ))}
       </ul>
