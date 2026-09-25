@@ -54,7 +54,11 @@ function ersterFaelligkeitstag(angelegtAm: string): string {
 
 // Wie viele Tage ist der nächste Check-in überfällig? 0 = nicht überfällig.
 // "letzteWoche" ist die Woche des letzten Check-ins (oder undefined, wenn es keinen gibt).
-export function ueberfaelligeTage(angelegtAm: string, letzteWoche: string | undefined, heute: string): number {
+export function ueberfaelligeTage(
+  angelegtAm: string,
+  letzteWoche: string | undefined,
+  heute: string,
+): number {
   const faellig = letzteWoche ? plusTage(letzteWoche, 7) : ersterFaelligkeitstag(angelegtAm);
   return Math.max(0, tageZwischen(faellig, heute));
 }
