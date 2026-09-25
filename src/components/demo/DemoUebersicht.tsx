@@ -8,5 +8,5 @@ export function DemoUebersicht() {
   const heute = useHeute();
   if (!heute) return null;
   const { kunden, checkins } = demoDaten(heute);
-  return <Uebersicht kunden={kunden} checkins={checkins} />;
+  return <Uebersicht kunden={kunden} checkins={checkins} heute={heute} />;
 }

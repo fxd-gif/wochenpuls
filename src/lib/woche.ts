@@ -46,6 +46,19 @@ export function checkinWoche(datum: string): string {
   return plusTage(datum, nach >= 4 ? 7 - nach : -nach);
 }
 
+// Ein neuer Kunde muss frühestens 3 Tage nach dem Anlegen zum ersten Mal einchecken.
+function ersterFaelligkeitstag(angelegtAm: string): string {
+  const fruehestens = plusTage(angelegtAm, 3);
+  return plusTage(fruehestens, (7 - tageNachFaelligkeit(fruehestens)) % 7);
+}
+
+// Wie viele Tage ist der nächste Check-in überfällig? 0 = nicht überfällig.
+// "letzteWoche" ist die Woche des letzten Check-ins (oder undefined, wenn es keinen gibt).
+export function ueberfaelligeTage(angelegtAm: string, letzteWoche: string | undefined, heute: string): number {
+  const faellig = letzteWoche ? plusTage(letzteWoche, 7) : ersterFaelligkeitstag(angelegtAm);
+  return Math.max(0, tageZwischen(faellig, heute));
+}
+
 const kurzFormat = new Intl.DateTimeFormat("de-DE", {
   timeZone: "UTC",
   weekday: "short",
