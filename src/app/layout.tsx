@@ -7,9 +7,18 @@ const outfit = Outfit({
   subsets: ["latin"],
 });
 
+const beschreibung = "Wöchentliche Check-ins für Fitness-Coaches: ein Link pro Kunde, eine Ampel für alle.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL("https://wochenpuls.vercel.app"),
   title: "Wochenpuls",
-  description: "Wöchentliche Check-ins für Fitness-Coaches: ein Link pro Kunde, eine Ampel für alle.",
+  description: beschreibung,
+  openGraph: {
+    title: "Wochenpuls – Wer braucht dich diese Woche?",
+    description: beschreibung,
+    locale: "de_DE",
+    type: "website",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
