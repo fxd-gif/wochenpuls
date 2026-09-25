@@ -5,6 +5,7 @@ import { WochenZahlen } from "@/components/checkin/WochenZahlen";
 import { bewerte } from "@/lib/ampel";
 import type { Checkin, Kunde } from "@/lib/checkin";
 import { datumKurz } from "@/lib/woche";
+import { Verlauf } from "./Verlauf";
 
 // Detailseite eines Kunden. Funktioniert für Demo und echte Daten gleich.
 export function KundenDetail({
@@ -87,6 +88,8 @@ export function KundenDetail({
       ) : (
         <p className="mt-6 rounded-lg bg-weiss p-6 text-lg">Noch kein Check-in.</p>
       )}
+
+      {eigene.length > 0 && <Verlauf checkins={eigene} heute={heute} />}
 
       {eigene.length > 0 && (
         <section className="mt-6 rounded-lg bg-weiss p-6">
