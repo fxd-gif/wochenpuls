@@ -18,6 +18,16 @@ export type CheckinEingabe = {
   frage: string;
 };
 
+// Ein gespeicherter Check-in. "woche" ist der Sonntag, für den er zählt (JJJJ-MM-TT).
+export type Checkin = CheckinEingabe & { kundeId: string; woche: string; eingereichtAm: string };
+
+export type Kunde = {
+  id: string;
+  name: string;
+  angelegtAm: string; // JJJJ-MM-TT
+  archiviert: boolean;
+};
+
 // Während des Ausfüllens dürfen Zahlen noch leer sein.
 export type CheckinEntwurf = {
   [K in keyof CheckinEingabe]: CheckinEingabe[K] extends number ? number | null : string;
