@@ -5,7 +5,7 @@ import { passwortStimmt, sitzungBeenden, sitzungStarten } from "@/lib/server/anm
 
 export async function anmelden(_vorher: string | null, daten: FormData): Promise<string | null> {
   if (!passwortStimmt(String(daten.get("passwort") ?? ""))) {
-    // ponytail: kurze Pause statt Sperre nach X Versuchen; Rate-Limit ergänzen, falls es echte Nutzer gibt
+    // Vereinfachung: kurze Pause statt Sperre nach X Versuchen; Rate-Limit ergänzen, falls es echte Nutzer gibt
     await new Promise((fertig) => setTimeout(fertig, 800));
     return "Das Passwort stimmt nicht.";
   }

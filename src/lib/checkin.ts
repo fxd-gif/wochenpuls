@@ -111,6 +111,25 @@ export function pruefeCheckin(entwurf: CheckinEntwurf): Fehler {
   return fehler;
 }
 
+// Daten aus einer Anfrage (nicht vertrauenswürdig) in einen Entwurf übersetzen.
+// Falsche Datentypen werden zu "leer", unbekannte Felder fallen weg. Danach pruefeCheckin aufrufen.
+export function entwurfAus(daten: unknown): CheckinEntwurf {
+  const d = (typeof daten === "object" && daten !== null ? daten : {}) as Record<string, unknown>;
+  const zahl = (w: unknown) => (typeof w === "number" ? w : null);
+  const text = (w: unknown) => (typeof w === "string" ? w : "");
+  return {
+    trainingsGeplant: zahl(d.trainingsGeplant),
+    trainingsGeschafft: zahl(d.trainingsGeschafft),
+    energie: zahl(d.energie),
+    schlaf: zahl(d.schlaf),
+    stress: zahl(d.stress),
+    motivation: zahl(d.motivation),
+    erfolg: text(d.erfolg),
+    huerde: text(d.huerde),
+    frage: text(d.frage),
+  };
+}
+
 // Nur aufrufen, wenn pruefeCheckin keine Fehler geliefert hat.
 export function alsEingabe(entwurf: CheckinEntwurf): CheckinEingabe {
   return {
