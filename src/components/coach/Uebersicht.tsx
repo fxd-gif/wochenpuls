@@ -39,7 +39,7 @@ export function Uebersicht({
       {/* Zusammenfassung */}
       <dl className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
         {(["rot", "gelb", "neu", "gruen"] as const).map((stufe) => (
-          <div key={stufe} className="flex items-center justify-between rounded-lg bg-weiss p-4">
+          <div key={stufe} className="flex items-center justify-between gap-2 rounded-lg bg-weiss p-3 sm:p-4">
             <dt>
               <AmpelMarke stufe={stufe} />
             </dt>
