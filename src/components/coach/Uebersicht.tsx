@@ -1,6 +1,7 @@
 import { MessageCircleQuestion } from "lucide-react";
 import Link from "next/link";
 import { AmpelMarke, ampelStufen, type AmpelStufe } from "@/components/AmpelMarke";
+import { ButtonLink } from "@/components/ui/Button";
 import { bewerte, sortiereNachAmpel } from "@/lib/ampel";
 import type { Checkin, Kunde } from "@/lib/checkin";
 import { checkinWoche, datumKurz } from "@/lib/woche";
@@ -47,6 +48,16 @@ export function Uebersicht({
           </div>
         ))}
       </dl>
+
+      {eintraege.length === 0 && (
+        <div className="mt-8 rounded-lg bg-weiss p-8">
+          <p className="text-xl font-bold">Noch keine Kunden.</p>
+          <p className="mt-2 text-lg text-leise">Leg deinen ersten Kunden an und schick ihm seinen Link.</p>
+          <ButtonLink href={`${basis}/kunden`} className="mt-6">
+            Kunden anlegen
+          </ButtonLink>
+        </div>
+      )}
 
       <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {eintraege.map(({ kunde, ampel }) => (

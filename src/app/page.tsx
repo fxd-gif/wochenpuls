@@ -1,4 +1,5 @@
 import { Activity, ArrowRight, Clock3, LayoutGrid, Link2 } from "lucide-react";
+import Link from "next/link";
 import { AmpelMarke, ampelStufen, type AmpelStufe } from "@/components/AmpelMarke";
 import { ButtonLink } from "@/components/ui/Button";
 
@@ -203,7 +204,12 @@ export default function Startseite() {
       <footer className="auf-farbe bg-dunkel text-weiss/70">
         <div className={`${innen} flex flex-col gap-2 py-10 text-sm sm:flex-row sm:justify-between`}>
           <span className="font-bold text-weiss">Wochenpuls</span>
-          <span>Portfolio-Projekt · Alle Beispieldaten sind erfunden</span>
+          <span>
+            Portfolio-Projekt · Alle Beispieldaten sind erfunden ·{" "}
+            <Link href="/login" className="underline underline-offset-4 hover:text-weiss">
+              Coach-Login
+            </Link>
+          </span>
         </div>
       </footer>
     </main>
