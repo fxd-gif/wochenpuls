@@ -83,11 +83,13 @@ export default function Startseite() {
                 an einem Ort und zeigt mit einer Ampel, wer gerade abrutscht.
               </p>
               <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
-                <ButtonLink href="/demo/checkin" variante="hell">
-                  Check-in ausprobieren
+                <ButtonLink href="/demo" variante="hell">
+                  Demo ansehen
                   <ArrowRight size={20} strokeWidth={2.5} aria-hidden="true" />
                 </ButtonLink>
-                <span className="text-sm font-medium text-weiss/80">Die Coach-Übersicht folgt in Kürze.</span>
+                <ButtonLink href="/demo/checkin" variante="outlineHell">
+                  Als Kunde einchecken
+                </ButtonLink>
               </div>
             </div>
 
@@ -189,10 +191,10 @@ export default function Startseite() {
           className={`${innen} relative flex flex-col gap-8 py-20 lg:flex-row lg:items-center lg:justify-between`}
         >
           <h2 className="max-w-2xl text-3xl font-bold tracking-tight sm:text-4xl">
-            Sieh es aus Kundensicht: Fülle den Check-in aus, genau wie deine Kunden.
+            Klick dich durch: 8 erfundene Kunden, eine Ampel, und du kannst selbst mitmachen.
           </h2>
-          <ButtonLink href="/demo/checkin" variante="dunkel" className="shrink-0">
-            Zum Check-in
+          <ButtonLink href="/demo" variante="dunkel" className="shrink-0">
+            Demo öffnen
             <ArrowRight size={20} strokeWidth={2.5} aria-hidden="true" />
           </ButtonLink>
         </div>

@@ -8,6 +8,7 @@ const varianten = {
   outline: "border-4 border-primaer text-primaer hover:bg-primaer hover:text-weiss",
   hell: "bg-weiss text-primaer hover:bg-primaer-hell",
   dunkel: "bg-dunkel text-weiss hover:bg-leise",
+  outlineHell: "border-4 border-weiss text-weiss hover:bg-weiss hover:text-primaer",
 };
 
 type Variante = keyof typeof varianten;

@@ -36,7 +36,7 @@
   /* Ampel. Immer zusammen mit Symbol und Wort zeigen (farbenblind-tauglich). */
   --color-ampel-rot: #dc2626;
   --color-ampel-gelb: #f59e0b;
-  --color-ampel-gruen: #10b981;
+  --color-ampel-gruen: #059669;
   --color-ampel-neu: #9ca3af;
 
   /* Fehlermeldungen im Formular (dunkler als Ampel-Rot, damit Text gut lesbar ist) */

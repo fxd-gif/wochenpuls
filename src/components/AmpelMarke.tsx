@@ -21,7 +21,7 @@ export const ampelStufen: Record<
   gruen: {
     wort: "Läuft",
     symbol: "✓",
-    kreis: "bg-ampel-gruen text-dunkel",
+    kreis: "bg-ampel-gruen text-weiss",
     beschreibung: "Alles im grünen Bereich.",
   },
   neu: {
