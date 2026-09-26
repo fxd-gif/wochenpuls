@@ -34,13 +34,13 @@ export function Skala({
               aria-label={zahl === 1 ? `1, ${links}` : zahl === 5 ? `5, ${rechts}` : String(zahl)}
               className="peer sr-only"
             />
-            <span className="flex h-14 items-center justify-center rounded-md bg-flaeche text-xl font-bold transition-all duration-200 hover:scale-105 hover:bg-flaeche-dunkel peer-checked:scale-105 peer-checked:bg-primaer peer-checked:text-weiss peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primaer-leuchtend">
+            <span className="flex h-12 items-center justify-center rounded-subtil border border-linie bg-flaeche-hoch font-mono text-[17px] text-text-zwei transition-colors hover:border-linie-fokus hover:text-text peer-checked:border-akzent peer-checked:bg-akzent peer-checked:font-semibold peer-checked:text-auf-akzent peer-checked:hover:border-akzent peer-checked:hover:bg-akzent peer-checked:hover:text-auf-akzent peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-akzent">
               {zahl}
             </span>
           </label>
         ))}
       </div>
-      <div aria-hidden="true" className="mt-2 flex justify-between text-sm text-leise">
+      <div aria-hidden="true" className="mt-2 flex justify-between text-[12px] text-text-leise">
         <span>{links}</span>
         <span>{rechts}</span>
       </div>

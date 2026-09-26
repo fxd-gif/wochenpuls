@@ -1,4 +1,5 @@
 import { skalen, type Checkin, type SkalaSchluessel } from "@/lib/checkin";
+import { mikroKlassen, panelKlassen } from "@/components/ui/stil";
 import { datumKurz, letzterFaelligkeitstag, plusTage } from "@/lib/woche";
 
 const WOCHEN = 8;
@@ -25,17 +26,15 @@ export function Verlauf({ checkins, heute }: { checkins: Checkin[]; heute: strin
   const proWoche = wochen.map((w) => checkins.find((c) => c.woche === w));
 
   return (
-    <section className="mt-6 rounded-lg bg-weiss p-6">
-      <h2 className="text-sm font-semibold uppercase tracking-wider text-leise">
-        Verlauf der letzten 8 Wochen
-      </h2>
-      <div className="mt-4 grid gap-x-8 gap-y-6 md:grid-cols-2">
+    <section className={`mt-6 ${panelKlassen}`}>
+      <h2 className={mikroKlassen}>Verlauf der letzten 8 Wochen</h2>
+      <div className="mt-5 grid gap-x-10 gap-y-8 md:grid-cols-2">
         {skalen.map(({ schluessel }) => (
           <figure key={schluessel}>
-            <figcaption className="font-bold">
+            <figcaption className="font-serif text-[20px] leading-tight">
               {titel[schluessel]}
               {schluessel === "stress" && (
-                <span className="font-normal text-leise"> · niedriger ist besser</span>
+                <span className="font-sans text-[13px] text-text-leise"> · niedriger ist besser</span>
               )}
             </figcaption>
             <Diagramm werte={proWoche.map((c) => c?.[schluessel])} wochen={wochen} name={titel[schluessel]} />
@@ -43,16 +42,16 @@ export function Verlauf({ checkins, heute }: { checkins: Checkin[]; heute: strin
         ))}
       </div>
 
-      <details className="mt-6">
-        <summary className="cursor-pointer font-semibold text-primaer">Als Tabelle anzeigen</summary>
+      <details className="mt-6 border-t border-linie pt-5">
+        <summary className="cursor-pointer text-[14px] font-medium text-akzent">Als Tabelle anzeigen</summary>
         <div className="mt-3 overflow-x-auto">
-          <table className="w-full text-left text-sm tabular-nums">
-            <thead className="text-leise">
+          <table className="w-full text-left font-mono text-[13px] tabular-nums">
+            <thead className="font-sans text-text-leise">
               <tr>
-                <th className="py-2 pr-4 font-semibold">Woche bis</th>
-                <th className="py-2 pr-4 font-semibold">Trainings</th>
+                <th className="py-2 pr-4 font-medium">Woche bis</th>
+                <th className="py-2 pr-4 font-medium">Trainings</th>
                 {skalen.map(({ schluessel }) => (
-                  <th key={schluessel} className="py-2 pr-4 font-semibold">
+                  <th key={schluessel} className="py-2 pr-4 font-medium">
                     {titel[schluessel]}
                   </th>
                 ))}
@@ -62,7 +61,7 @@ export function Verlauf({ checkins, heute }: { checkins: Checkin[]; heute: strin
               {wochen.map((w, i) => {
                 const c = proWoche[i];
                 return (
-                  <tr key={w} className="border-t border-flaeche-dunkel">
+                  <tr key={w} className="border-t border-linie">
                     <td className="py-2 pr-4">{datumKurz(w)}</td>
                     {c ? (
                       <>
@@ -76,7 +75,7 @@ export function Verlauf({ checkins, heute }: { checkins: Checkin[]; heute: strin
                         ))}
                       </>
                     ) : (
-                      <td colSpan={5} className="py-2 pr-4 text-leise">
+                      <td colSpan={5} className="py-2 pr-4 font-sans text-text-leise">
                         kein Check-in
                       </td>
                     )}
@@ -120,7 +119,7 @@ function Diagramm({
             x2={B - RAND.rechts}
             y1={y(stufe)}
             y2={y(stufe)}
-            className="stroke-flaeche-dunkel"
+            className="stroke-linie-fokus"
             strokeWidth={1}
           />
           <text
@@ -128,22 +127,22 @@ function Diagramm({
             y={y(stufe)}
             dy="0.35em"
             textAnchor="middle"
-            className="fill-leise text-[11px]"
+            className="fill-text-leise font-mono text-[10px]"
           >
             {stufe}
           </text>
         </g>
       ))}
-      <text x={x(0)} y={H - 4} textAnchor="start" className="fill-leise text-[11px]">
+      <text x={x(0)} y={H - 4} textAnchor="start" className="fill-text-leise font-mono text-[10px]">
         {datumKurz(wochen[0])}
       </text>
-      <text x={x(WOCHEN - 1)} y={H - 4} textAnchor="end" className="fill-leise text-[11px]">
+      <text x={x(WOCHEN - 1)} y={H - 4} textAnchor="end" className="fill-text-leise font-mono text-[10px]">
         {datumKurz(wochen[WOCHEN - 1])}
       </text>
 
       <path
         d={stuecke.join("")}
-        className="stroke-primaer"
+        className="stroke-akzent"
         strokeWidth={2}
         fill="none"
         strokeLinecap="round"
@@ -156,7 +155,7 @@ function Diagramm({
             <title>{`Woche bis ${datumKurz(wochen[i])}: ${wert}`}</title>
             {/* großer unsichtbarer Bereich, damit der Tooltip leicht zu treffen ist */}
             <circle cx={x(i)} cy={y(wert)} r={12} fill="transparent" />
-            <circle cx={x(i)} cy={y(wert)} r={4} className="fill-primaer stroke-weiss" strokeWidth={2} />
+            <circle cx={x(i)} cy={y(wert)} r={4} className="fill-akzent stroke-flaeche" strokeWidth={2} />
           </g>
         ),
       )}
@@ -166,7 +165,7 @@ function Diagramm({
           x={x(letzterIndex) + 10}
           y={y(werte[letzterIndex]!)}
           dy="0.35em"
-          className="fill-dunkel text-[13px] font-bold"
+          className="fill-text font-mono text-[13px] font-semibold"
         >
           {werte[letzterIndex]}
         </text>

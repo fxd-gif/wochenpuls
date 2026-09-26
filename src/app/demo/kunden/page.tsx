@@ -9,9 +9,9 @@ export const metadata: Metadata = {
 
 export default function DemoKundenSeite() {
   return (
-    <main className="min-h-screen bg-flaeche">
+    <main className="flex-1">
       <DemoBanner />
-      <CoachKopf basis="/demo" />
+      <CoachKopf basis="/demo" etikett="Demo" />
       <DemoVerwaltung />
     </main>
   );

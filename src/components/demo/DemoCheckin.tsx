@@ -15,20 +15,20 @@ export function DemoCheckin() {
         speichereDemoCheckin(eingabe);
       }}
       nachDemAbsenden={(neuStarten) => (
-        <div className="rounded-lg bg-primaer-hell p-6">
-          <p className="text-lg font-semibold">
+        <div className="rounded-panel border border-akzent/25 bg-akzent/5 p-6">
+          <p className="font-serif text-[22px] leading-snug">
             Jetzt die Seite wechseln: So sieht dein Coach deinen Check-in.
           </p>
-          <p className="mt-2 leading-relaxed text-leise">
+          <p className="mt-2 text-[14px] leading-relaxed text-text-zwei">
             Dein Check-in ist nur in diesem Browser-Tab gespeichert und verschwindet, wenn du ihn schließt.
           </p>
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
             <ButtonLink href="/demo" variante="primaer">
               In der Coach-Übersicht ansehen
-              <ArrowRight size={20} strokeWidth={2.5} aria-hidden="true" />
+              <ArrowRight size={17} strokeWidth={2} aria-hidden="true" />
             </ButtonLink>
             <Button variante="sekundaer" onClick={neuStarten}>
-              <RotateCcw size={20} strokeWidth={2.5} aria-hidden="true" />
+              <RotateCcw size={16} strokeWidth={2} aria-hidden="true" />
               Nochmal ausfüllen
             </Button>
           </div>

@@ -3,13 +3,14 @@
 import { LogIn } from "lucide-react";
 import { useActionState } from "react";
 import { Button } from "@/components/ui/Button";
+import { eingabeKlassen } from "@/components/ui/stil";
 import { anmelden } from "./aktionen";
 
 export function LoginFormular() {
   const [fehler, aktion, laeuft] = useActionState(anmelden, null);
   return (
-    <form action={aktion} className="mt-8">
-      <label htmlFor="passwort" className="font-bold">
+    <form action={aktion} className="mt-6">
+      <label htmlFor="passwort" className="text-[13px] font-medium text-text">
         Passwort
       </label>
       <input
@@ -19,15 +20,15 @@ export function LoginFormular() {
         required
         autoComplete="current-password"
         aria-describedby={fehler ? "login-fehler" : undefined}
-        className="mt-2 h-14 w-full rounded-md border-2 border-transparent bg-flaeche px-4 text-lg focus:border-primaer focus:bg-weiss focus:outline-none"
+        className={`${eingabeKlassen} mt-2 h-12`}
       />
       {fehler && (
-        <p id="login-fehler" role="alert" className="mt-3 font-medium text-fehler">
+        <p id="login-fehler" role="alert" className="mt-3 text-[14px] font-medium text-ampel-rot">
           {fehler}
         </p>
       )}
       <Button type="submit" disabled={laeuft} className="mt-6 w-full">
-        <LogIn size={20} strokeWidth={2.5} aria-hidden="true" />
+        <LogIn size={17} strokeWidth={2} aria-hidden="true" />
         {laeuft ? "Wird geprüft …" : "Anmelden"}
       </Button>
     </form>

@@ -2,6 +2,7 @@
 
 import { Check, CircleAlert, Send } from "lucide-react";
 import { useState, type ReactNode } from "react";
+import { Kicker } from "@/components/ui/Abschnittskopf";
 import { Button } from "@/components/ui/Button";
 import {
   alsEingabe,
@@ -113,45 +114,49 @@ export function CheckinFormular({
 
   return (
     <>
-      {/* Kopf: blaue Fläche */}
-      <header className="auf-farbe relative overflow-hidden bg-primaer text-weiss">
-        <div aria-hidden="true" className="absolute -right-16 -top-20 size-56 rounded-full bg-weiss/10" />
-        <div className="relative mx-auto max-w-xl px-4 pb-10 pt-8">
-          <p className="text-sm font-semibold uppercase tracking-wider text-weiss/80">Wochen-Check-in</p>
-          <h1 className="mt-3 text-4xl font-extrabold leading-tight tracking-tight">
-            {vorname ? `Hallo ${vorname}!` : "Hallo!"}
-            <br />
-            Wie war deine Woche?
+      {/* Kopf */}
+      <header className="relative overflow-hidden">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-24 -top-24 size-[420px] rounded-full bg-akzent/5 blur-[120px]"
+        />
+        <div className="relative mx-auto max-w-xl px-5 pb-8 pt-10">
+          <Kicker>Wochen-Check-in</Kicker>
+          <h1 className="mt-3 font-serif text-[40px] font-normal leading-[1.08] tracking-tight">
+            {vorname ? `Hallo ${vorname}!` : "Hallo!"}{" "}
+            <span className="italic text-akzent/90">Wie war deine Woche?</span>
           </h1>
-          <p className="mt-3 text-lg">8 kurze Fragen, etwa 2 Minuten.</p>
+          <p className="mt-3 text-[15px] text-text-zwei">8 kurze Fragen, etwa 2 Minuten.</p>
         </div>
       </header>
 
       {/* Fortschritt: bleibt beim Scrollen oben sichtbar */}
-      <div className="sticky top-0 z-10 bg-weiss">
-        <div className="mx-auto flex max-w-xl items-center gap-4 px-4 py-3">
+      <div className="sticky top-0 z-20 border-y border-linie bg-leinwand/90 backdrop-blur-md">
+        <div className="mx-auto flex max-w-xl items-center gap-4 px-5 py-3">
           <div
             role="progressbar"
             aria-label="Fortschritt"
             aria-valuemin={0}
             aria-valuemax={pflichtfelder.length}
             aria-valuenow={beantwortet}
-            className="h-2 flex-1 overflow-hidden rounded-full bg-flaeche"
+            className="h-1.5 flex-1 overflow-hidden rounded-full bg-spur"
           >
             <div
-              className={`h-full rounded-full transition-all duration-300 ${
-                alleBeantwortet ? "bg-sekundaer" : "bg-primaer-leuchtend"
-              }`}
+              className="h-full rounded-full bg-akzent transition-all duration-300"
               style={{ width: `${(beantwortet / pflichtfelder.length) * 100}%` }}
             />
           </div>
-          <span className="w-24 text-right text-sm font-semibold tabular-nums">
-            {alleBeantwortet ? "Fertig!" : `${beantwortet} von ${pflichtfelder.length}`}
+          <span
+            className={`w-20 text-right font-mono text-[12px] tabular-nums ${
+              alleBeantwortet ? "text-akzent" : "text-text-zwei"
+            }`}
+          >
+            {alleBeantwortet ? "Fertig ✓" : `${beantwortet} von ${pflichtfelder.length}`}
           </span>
         </div>
       </div>
 
-      <form noValidate onSubmit={absenden} className="mx-auto max-w-xl px-4 pb-16">
+      <form noValidate onSubmit={absenden} className="mx-auto max-w-xl space-y-4 px-5 pb-16 pt-6">
         <Frageblock
           id="trainings"
           nummer={1}
@@ -245,28 +250,28 @@ export function CheckinFormular({
           />
         </Frageblock>
 
-        <div className="mt-4 space-y-4">
+        <div className="space-y-4 pt-2">
           {anzahlFehler > 0 && (
             <p
               role="alert"
-              className="flex items-center gap-2 rounded-md bg-flaeche p-4 font-medium text-fehler"
+              className="flex items-center gap-2 rounded-subtil border border-ampel-rot/30 bg-ampel-rot/10 p-4 text-[14px] font-medium text-ampel-rot"
             >
-              <CircleAlert size={20} strokeWidth={2.5} aria-hidden="true" />
+              <CircleAlert size={17} strokeWidth={2} aria-hidden="true" />
               {anzahlFehler === 1 ? "Eine Angabe fehlt noch." : `${anzahlFehler} Angaben fehlen noch.`}
             </p>
           )}
           {sendeFehler && (
             <p
               role="alert"
-              className="flex items-center gap-2 rounded-md bg-flaeche p-4 font-medium text-fehler"
+              className="flex items-center gap-2 rounded-subtil border border-ampel-rot/30 bg-ampel-rot/10 p-4 text-[14px] font-medium text-ampel-rot"
             >
-              <CircleAlert size={20} strokeWidth={2.5} aria-hidden="true" />
+              <CircleAlert size={17} strokeWidth={2} aria-hidden="true" />
               Das hat nicht geklappt. Bitte versuch es gleich noch einmal.
             </p>
           )}
-          <Button type="submit" disabled={sendet} className="w-full text-lg">
+          <Button type="submit" disabled={sendet} className="h-[52px] w-full">
             {sendet ? "Wird gesendet …" : "Check-in absenden"}
-            {!sendet && <Send size={20} strokeWidth={2.5} aria-hidden="true" />}
+            {!sendet && <Send size={17} strokeWidth={2} aria-hidden="true" />}
           </Button>
         </div>
       </form>
@@ -284,29 +289,27 @@ function Bestaetigung({
   children?: ReactNode;
 }) {
   return (
-    <div>
-      <section className="relative overflow-hidden bg-sekundaer text-dunkel">
-        <div aria-hidden="true" className="absolute -right-12 -top-16 size-56 rounded-full bg-weiss/20" />
-        <div className="relative mx-auto max-w-xl px-4 pb-12 pt-12">
-          <span className="flex size-16 items-center justify-center rounded-full bg-weiss text-sekundaer">
-            <Check size={34} strokeWidth={3} aria-hidden="true" />
-          </span>
-          <h1 className="mt-6 text-4xl font-extrabold tracking-tight">
-            {vorname ? `Danke, ${vorname}!` : "Danke!"}
-          </h1>
-          <p className="mt-3 text-lg">
-            Dein Check-in ist angekommen. Dein Coach schaut ihn sich an und meldet sich.
-          </p>
-        </div>
-      </section>
-
-      <div className="mx-auto max-w-xl px-4 py-10">
-        <h2 className="text-sm font-semibold uppercase tracking-wider text-leise">Deine Woche in Zahlen</h2>
-        <div className="mt-4">
-          <WochenZahlen eingabe={eingabe} />
-        </div>
-        {children && <div className="mt-10">{children}</div>}
+    <div className="relative mx-auto max-w-xl px-5 py-12">
+      <span className="flex size-14 items-center justify-center rounded-full border border-akzent/30 bg-akzent/10 text-akzent">
+        <Check size={26} strokeWidth={2} aria-hidden="true" />
+      </span>
+      <div className="mt-6">
+        <Kicker>Check-in gesendet</Kicker>
       </div>
+      <h1 className="mt-2 font-serif text-[40px] font-normal leading-tight tracking-tight">
+        {vorname ? `Danke, ${vorname}!` : "Danke!"}
+      </h1>
+      <p className="mt-3 text-[15px] leading-relaxed text-text-zwei">
+        Dein Check-in ist angekommen. Dein Coach schaut ihn sich an und meldet sich.
+      </p>
+
+      <h2 className="mt-10 font-mono text-[11px] uppercase tracking-[0.1em] text-text-leise">
+        Deine Woche in Zahlen
+      </h2>
+      <div className="mt-3">
+        <WochenZahlen eingabe={eingabe} />
+      </div>
+      {children && <div className="mt-10">{children}</div>}
     </div>
   );
 }

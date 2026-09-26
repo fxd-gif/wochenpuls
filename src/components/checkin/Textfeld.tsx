@@ -1,6 +1,7 @@
+import { eingabeKlassen } from "@/components/ui/stil";
 import { MAX_TEXTLAENGE } from "@/lib/checkin";
 
-// Mehrzeiliges Textfeld: grau, beim Antippen weiß mit blauem Rand.
+// Mehrzeiliges Textfeld mit Zeichenzähler
 export function Textfeld({
   id,
   wert,
@@ -26,11 +27,12 @@ export function Textfeld({
         value={wert}
         placeholder={platzhalter}
         onChange={(e) => onChange(e.target.value)}
-        className={`block w-full resize-y rounded-md border-2 bg-flaeche px-4 py-3 text-lg leading-relaxed placeholder:text-leise/80 focus:border-primaer focus:bg-weiss focus:outline-none ${
-          hatFehler ? "border-fehler" : "border-transparent"
-        }`}
+        className={`${eingabeKlassen} block resize-y py-3 leading-relaxed aria-invalid:border-ampel-rot/60`}
       />
-      <p id={`zaehler-${id}`} className="mt-1 text-right text-xs text-leise tabular-nums">
+      <p
+        id={`zaehler-${id}`}
+        className="mt-1.5 text-right font-mono text-[11px] text-text-leise tabular-nums"
+      >
         {wert.length} / {MAX_TEXTLAENGE}
       </p>
     </div>

@@ -12,19 +12,19 @@ export function DemoUebersicht() {
   return (
     <>
       {/* Einladung zum Mitmachen */}
-      <div className="mx-auto max-w-7xl px-4 pt-8 sm:px-6 lg:px-8">
-        <div className="auf-farbe flex flex-col gap-4 rounded-lg bg-primaer p-6 text-weiss sm:flex-row sm:items-center sm:justify-between">
-          <p className="flex items-center gap-3 text-lg font-semibold">
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-weiss text-primaer">
-              <UserRound size={22} strokeWidth={2.5} aria-hidden="true" />
+      <div className="mx-auto max-w-7xl px-5 pt-8 lg:px-8">
+        <div className="flex flex-col gap-4 rounded-panel border border-akzent/25 bg-akzent/5 p-5 sm:flex-row sm:items-center sm:justify-between">
+          <p className="flex items-center gap-3 text-[15px] font-medium">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-full border border-akzent/30 bg-flaeche-hoch text-akzent">
+              <UserRound size={19} strokeWidth={1.75} aria-hidden="true" />
             </span>
             {daten.mitDu
               ? "Du bist jetzt in der Übersicht: Such die Karte „Du“."
               : "Probier es selbst: Fülle den Check-in als Kunde aus und sieh dich hier in der Ampel."}
           </p>
-          <ButtonLink href="/demo/checkin" variante="hell" className="shrink-0">
+          <ButtonLink href="/demo/checkin" groesse="klein" className="shrink-0">
             {daten.mitDu ? "Nochmal ausfüllen" : "Check-in ausfüllen"}
-            <ArrowRight size={20} strokeWidth={2.5} aria-hidden="true" />
+            <ArrowRight size={16} strokeWidth={2} aria-hidden="true" />
           </ButtonLink>
         </div>
       </div>

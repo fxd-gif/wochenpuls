@@ -7,36 +7,70 @@ export const alt = "Wochenpuls: Wöchentliche Check-ins für Fitness-Coaches";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-// Ampel-Symbole als Grafik, weil Schriften ▲ und ✓ oft nicht enthalten
-const symbole = {
-  rot: <path d="M9 3 L16 15 H2 Z" fill="#ffffff" />,
-  gelb: <path d="M8 3 H10 V11 H8 Z M8 13 H10 V15 H8 Z" fill="#111827" />,
-  gruen: (
-    <path d="M4 9.5 L7.5 13 L14 5.5" stroke="#ffffff" strokeWidth={2.6} fill="none" strokeLinecap="round" />
-  ),
+const farbe = {
+  leinwand: "#0F1210",
+  fenster: "#141815",
+  kopf: "#181D1A",
+  flaeche: "#161A17",
+  text: "#F0EEE8",
+  zwei: "#A8ACA6",
+  leise: "#8A908A",
+  linie: "rgba(240,238,232,0.10)",
+  akzent: "#8DB8A6",
+  rot: "#EF766C",
+  gelb: "#DBA55C",
 };
 
+// Ampel-Symbole als Grafik, weil Schriften ▲ und ✓ oft nicht enthalten
+function Symbol({ art, f }: { art: "rot" | "gelb" | "gruen"; f: string }) {
+  return (
+    <svg width="12" height="12" viewBox="0 0 12 12">
+      {art === "rot" && <path d="M6 1.5 L11 10.5 H1 Z" fill={f} />}
+      {art === "gelb" && <path d="M5 1 H7 V7.5 H5 Z M5 9 H7 V11 H5 Z" fill={f} />}
+      {art === "gruen" && (
+        <path d="M2 6.5 L4.8 9.2 L10 3" stroke={f} strokeWidth={2} fill="none" strokeLinecap="round" />
+      )}
+    </svg>
+  );
+}
+
+function Marke({ art, f, wort }: { art: "rot" | "gelb" | "gruen"; f: string; wort: string }) {
+  return (
+    <span
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 6,
+        padding: "3px 8px",
+        borderRadius: 4,
+        border: `1px solid ${f}55`,
+        background: `${f}1F`,
+        color: f,
+        fontSize: 13,
+        fontWeight: 600,
+        letterSpacing: 1,
+      }}
+    >
+      <Symbol art={art} f={f} />
+      {wort}
+    </span>
+  );
+}
+
 const zeilen = [
+  { name: "Lena", grund: "Nur 1 von 4 Trainings geschafft", art: "rot" as const, f: farbe.rot, wort: "HANDELN" },
   {
-    name: "Lena",
-    grund: "Nur 1 von 4 Trainings geschafft",
-    farbe: "#dc2626",
-    symbol: symbole.rot,
-    wort: "HANDELN",
-  },
-  {
-    name: "Tom",
-    grund: "Stress diese Woche sehr hoch",
-    farbe: "#f59e0b",
-    symbol: symbole.gelb,
+    name: "Mia",
+    grund: "Schlaf deutlich schlechter als sonst",
+    art: "gelb" as const,
+    f: farbe.gelb,
     wort: "BEOBACHTEN",
   },
-  { name: "Mia", grund: "Alles im grünen Bereich", farbe: "#059669", symbol: symbole.gruen, wort: "LÄUFT" },
+  { name: "Aylin", grund: "Alles im grünen Bereich", art: "gruen" as const, f: farbe.akzent, wort: "LÄUFT" },
 ];
 
 export default async function Vorschaubild() {
-  const schrift = (gewicht: number) =>
-    readFile(join(process.cwd(), `src/app/_schrift/Outfit-${gewicht}.ttf`));
+  const schrift = (datei: string) => readFile(join(process.cwd(), `src/app/_schrift/${datei}`));
 
   return new ImageResponse(
     <div
@@ -44,103 +78,123 @@ export default async function Vorschaubild() {
         width: "100%",
         height: "100%",
         display: "flex",
-        background: "#2563eb",
-        color: "#ffffff",
-        padding: 64,
+        background: farbe.leinwand,
+        color: farbe.text,
+        padding: "60px 64px",
+        fontFamily: "Inter",
         position: "relative",
-        overflow: "hidden",
-        fontFamily: "Outfit",
       }}
     >
-      <div
-        style={{
-          position: "absolute",
-          right: -160,
-          top: -160,
-          width: 520,
-          height: 520,
-          borderRadius: 9999,
-          background: "rgba(255,255,255,0.1)",
-        }}
-      />
-      <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", width: 640 }}>
-        <div style={{ fontSize: 34, fontWeight: 800 }}>Wochenpuls</div>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            fontSize: 80,
-            fontWeight: 800,
-            lineHeight: 1.05,
-          }}
-        >
-          <span>Wer braucht dich</span>
-          <span style={{ display: "flex" }}>
-            <span style={{ background: "#f59e0b", color: "#111827", borderRadius: 10, padding: "0 12px" }}>
-              diese Woche
-            </span>
-            ?
-          </span>
+      {/* Text links */}
+      <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", width: 600 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: 44,
+              height: 44,
+              borderRadius: 10,
+              background: "#1C211D",
+              border: `1px solid ${farbe.linie}`,
+            }}
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24">
+              <path
+                d="M2 12h4l2.5-6 4 12 3-8 2.5 5 2-3h4"
+                fill="none"
+                stroke={farbe.akzent}
+                strokeWidth={1.9}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+          <span style={{ fontSize: 26, fontWeight: 600 }}>Wochenpuls</span>
         </div>
-        <div style={{ fontSize: 30 }}>Check-ins für Fitness-Coaches</div>
+
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <span style={{ fontSize: 15, letterSpacing: 2, color: farbe.akzent, marginBottom: 18 }}>
+            CHECK-INS FÜR COACHES
+          </span>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              fontFamily: "Newsreader",
+              fontSize: 84,
+              lineHeight: 1.04,
+              letterSpacing: -2.5,
+            }}
+          >
+            <span>Wer braucht dich</span>
+            <span style={{ fontStyle: "italic", color: farbe.akzent }}>diese Woche?</span>
+          </div>
+        </div>
+
+        <span style={{ fontSize: 22, color: farbe.zwei }}>Ein Link pro Kunde. Eine Ampel für alle.</span>
       </div>
+
+      {/* Produktfenster rechts */}
       <div
         style={{
           display: "flex",
           flexDirection: "column",
           marginLeft: "auto",
-          width: 420,
-          background: "#ffffff",
-          color: "#111827",
-          borderRadius: 12,
-          padding: "24px 24px 12px",
           alignSelf: "center",
+          width: 440,
+          background: farbe.fenster,
+          border: `1px solid ${farbe.linie}`,
+          borderRadius: 12,
+          overflow: "hidden",
         }}
       >
-        {zeilen.map((z) => (
-          <div
-            key={z.name}
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              background: "#f3f4f6",
-              borderRadius: 8,
-              padding: 18,
-              marginBottom: 12,
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <span style={{ fontSize: 30, fontWeight: 800 }}>{z.name}</span>
-              <span style={{ display: "flex", alignItems: "center", fontSize: 16, fontWeight: 800 }}>
-                <span
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    width: 32,
-                    height: 32,
-                    borderRadius: 9999,
-                    background: z.farbe,
-                    marginRight: 8,
-                  }}
-                >
-                  <svg width="18" height="18" viewBox="0 0 18 18">
-                    {z.symbol}
-                  </svg>
-                </span>
-                {z.wort}
-              </span>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            padding: "12px 16px",
+            background: farbe.kopf,
+            borderBottom: `1px solid ${farbe.linie}`,
+          }}
+        >
+          <div style={{ width: 10, height: 10, borderRadius: 99, background: farbe.rot }} />
+          <div style={{ width: 10, height: 10, borderRadius: 99, background: farbe.gelb }} />
+          <div style={{ width: 10, height: 10, borderRadius: 99, background: farbe.akzent }} />
+          <span style={{ marginLeft: 8, fontSize: 13, color: farbe.leise }}>wochenpuls.vercel.app/demo</span>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", padding: 20, gap: 12 }}>
+          {zeilen.map((z) => (
+            <div
+              key={z.name}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                padding: 16,
+                borderRadius: 6,
+                background: z.art === "gruen" ? farbe.flaeche : `${z.f}14`,
+                border: `1px solid ${z.art === "gruen" ? farbe.linie : `${z.f}55`}`,
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <span style={{ fontFamily: "Newsreader", fontSize: 28 }}>{z.name}</span>
+                <Marke art={z.art} f={z.f} wort={z.wort} />
+              </div>
+              <span style={{ fontSize: 16, color: farbe.zwei, marginTop: 4 }}>{z.grund}</span>
             </div>
-            <span style={{ fontSize: 20, color: "#4b5563", marginTop: 4 }}>{z.grund}</span>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>,
     {
       ...size,
       fonts: [
-        { name: "Outfit", data: await schrift(400), weight: 400, style: "normal" },
-        { name: "Outfit", data: await schrift(800), weight: 800, style: "normal" },
+        { name: "Inter", data: await schrift("Inter-400.ttf"), weight: 400, style: "normal" },
+        { name: "Inter", data: await schrift("Inter-600.ttf"), weight: 600, style: "normal" },
+        { name: "Newsreader", data: await schrift("Newsreader-400.ttf"), weight: 400, style: "normal" },
+        { name: "Newsreader", data: await schrift("Newsreader-400-kursiv.ttf"), weight: 400, style: "italic" },
       ],
     },
   );

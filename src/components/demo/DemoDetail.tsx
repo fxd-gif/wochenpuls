@@ -11,8 +11,8 @@ export function DemoDetail({ id }: { id: string }) {
   const kunde = kunden.find((k) => k.id === id);
   if (!kunde) {
     return (
-      <div className="mx-auto max-w-5xl px-4 py-16">
-        <h1 className="text-3xl font-bold">Diesen Kunden gibt es nicht.</h1>
+      <div className="mx-auto max-w-5xl px-5 py-16 lg:px-8">
+        <h1 className="font-serif text-4xl">Diesen Kunden gibt es nicht.</h1>
         <ButtonLink href="/demo" className="mt-6">
           Zur Übersicht
         </ButtonLink>

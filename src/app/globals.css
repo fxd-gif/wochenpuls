@@ -1,63 +1,108 @@
 @import "tailwindcss";
 
 /*
-  Design-Grundlage: Flat Design.
-  Keine Schatten, keine Texturen, keine Verläufe auf Elementen.
-  Hierarchie entsteht durch Farbe, Größe und Schrift.
-  Alle Farben stehen hier. Tailwinds Standardfarben und Schatten sind abgeschaltet,
-  damit nichts Fremdes ins Design rutscht.
+  Design-Grundlage: "Dark Editorial".
+  Dunkle, warme Flächen, feine Haarlinien, Serifenschrift für Überschriften,
+  gedeckte Naturtöne für die Ampel. Alle Farben stehen hier an einer Stelle.
+  Tailwinds Standardfarben sind abgeschaltet, damit nichts Fremdes ins Design rutscht.
 */
 @theme {
   --color-*: initial;
-  --shadow-*: initial;
-  --inset-shadow-*: initial;
-  --drop-shadow-*: initial;
 
-  /* Grundfarben */
-  --color-weiss: #ffffff;
-  --color-dunkel: #111827;
-  --color-leise: #4b5563;
-  --color-flaeche: #f3f4f6;
-  --color-flaeche-dunkel: #e5e7eb;
+  /* Flächen, von hinten nach vorne */
+  --color-leinwand: #0f1210; /* Seitenhintergrund */
+  --color-abschnitt: #121513; /* abgesetzte Abschnitte */
+  --color-flaeche: #161a17; /* Karten */
+  --color-flaeche-hoch: #1c211d; /* hervorgehobene Karten, Eingabefelder */
+  --color-flaeche-alt: #212723; /* Kästen in Karten */
+  --color-spur: #252c28; /* Hintergrund von Balken */
 
-  /* Aktionsfarbe Blau. "primaer" ist etwas dunkler als #3B82F6,
-     damit weiße Schrift darauf gut lesbar ist (Kontrast nach WCAG AA). */
-  --color-primaer: #2563eb;
-  --color-primaer-dunkel: #1d4ed8;
-  --color-primaer-leuchtend: #3b82f6;
-  --color-primaer-hell: #eff6ff;
+  /* Haarlinien */
+  --color-linie: rgb(240 238 232 / 0.08);
+  --color-linie-leise: rgb(240 238 232 / 0.04);
+  --color-linie-fokus: rgb(240 238 232 / 0.16);
 
-  /* Akzente für die Startseite */
-  --color-sekundaer: #10b981;
-  --color-sekundaer-hell: #ecfdf5;
-  --color-akzent: #f59e0b;
-  --color-akzent-hell: #fffbeb;
+  /* Text */
+  --color-text: #f0eee8; /* Pergament-Weiß */
+  --color-text-zwei: #a8aca6; /* erklärender Text */
+  --color-text-leise: #8a908a; /* Metadaten (angehoben für ≥4.5:1 Kontrast auf allen Flächen) */
 
-  /* Ampel. Immer zusammen mit Symbol und Wort zeigen (farbenblind-tauglich). */
-  --color-ampel-rot: #dc2626;
-  --color-ampel-gelb: #f59e0b;
-  --color-ampel-gruen: #059669;
-  --color-ampel-neu: #9ca3af;
+  /* Akzent: Salbeigrün */
+  --color-akzent: #8db8a6;
+  --color-akzent-hover: #9dc5b4;
+  --color-auf-akzent: #0e241b;
 
-  /* Fehlermeldungen im Formular (dunkler als Ampel-Rot, damit Text gut lesbar ist) */
-  --color-fehler: #b91c1c;
+  /* Ampel. Immer zusammen mit Symbol und Wort zeigen (farbenblind-tauglich, geprüft). */
+  --color-ampel-rot: #ef766c; /* angehoben für ≥4.5:1, auch getönt hinter dem Chip-Text */
+  --color-ampel-gelb: #dba55c;
+  --color-ampel-gruen: #8db8a6;
+  --color-ampel-neu: #8a8f8a; /* angehoben für ≥4.5:1 Kontrast auf allen Flächen */
 
-  --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-newsreader), Georgia, serif;
+  --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+
+  --radius-subtil: 8px;
+  --radius-panel: 12px;
+}
+
+html {
+  color-scheme: dark;
 }
 
 body {
-  background: var(--color-weiss);
-  color: var(--color-dunkel);
+  background: var(--color-leinwand);
+  color: var(--color-text);
   font-family: var(--font-sans);
 }
 
-/* Tastatur-Fokus: klarer blauer Rahmen, nur bei Tastaturbedienung */
+::selection {
+  background: rgb(141 184 166 / 0.25);
+}
+
+/* Tastatur-Fokus: salbeigrüner Rahmen, nur bei Tastaturbedienung */
 :focus-visible {
-  outline: 2px solid var(--color-primaer-leuchtend);
+  outline: 2px solid var(--color-akzent);
   outline-offset: 2px;
 }
 
-/* Auf farbigen Flächen ist der Fokus-Rahmen weiß */
-.auf-farbe :focus-visible {
-  outline-color: var(--color-weiss);
+/* Weicher Schatten für schwebende Fenster (Produkt-Vorschau, Formular-Rahmen) */
+@utility halo {
+  box-shadow:
+    0 20px 48px -12px rgb(0 0 0 / 0.7),
+    inset 0 1px 0 rgb(240 238 232 / 0.08);
+}
+
+/* Schieberegler im Stil des Entwurfs */
+input[type="range"] {
+  appearance: none;
+  background: transparent;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 4px;
+  background: var(--color-spur);
+  border-radius: 999px;
+}
+input[type="range"]::-moz-range-track {
+  height: 4px;
+  background: var(--color-spur);
+  border-radius: 999px;
+}
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  height: 20px;
+  width: 20px;
+  margin-top: -8px;
+  border-radius: 50%;
+  background: var(--color-text);
+  border: 2px solid var(--color-akzent);
+  cursor: pointer;
+}
+input[type="range"]::-moz-range-thumb {
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background: var(--color-text);
+  border: 2px solid var(--color-akzent);
+  cursor: pointer;
 }

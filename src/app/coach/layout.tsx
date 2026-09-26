@@ -1,7 +1,9 @@
 import { LogOut } from "lucide-react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { abmelden } from "@/app/login/aktionen";
 import { CoachKopf } from "@/components/coach/CoachKopf";
+import { Hinweisseite } from "@/components/ui/Hinweisseite";
 import { anmeldungPruefen } from "@/lib/server/anmeldung";
 import { datenbankEingerichtet } from "@/lib/server/datenbank";
 
@@ -14,28 +16,35 @@ export const metadata: Metadata = {
 export default async function CoachRahmen({ children }: LayoutProps<"/coach">) {
   await anmeldungPruefen();
   return (
-    <main className="min-h-screen bg-flaeche">
+    <>
       <CoachKopf
         basis="/coach"
+        etikett="Coach"
         extra={
           <form action={abmelden}>
             <button
               type="submit"
-              className="flex items-center gap-2 rounded-md px-3 py-2 font-medium transition-colors duration-200 hover:bg-weiss/10"
+              className="flex min-h-11 min-w-11 items-center justify-center gap-1.5 rounded-subtil px-3 text-text-zwei transition-colors hover:bg-flaeche hover:text-text"
             >
-              <LogOut size={18} strokeWidth={2.5} aria-hidden="true" />
-              Abmelden
+              <LogOut size={15} strokeWidth={1.75} aria-hidden="true" />
+              <span className="hidden sm:inline">Abmelden</span>
+              <span className="sr-only sm:hidden">Abmelden</span>
             </button>
           </form>
         }
       />
       {datenbankEingerichtet() ? (
-        children
+        <main className="flex-1">{children}</main>
       ) : (
-        <p className="mx-auto max-w-3xl px-4 py-16 text-lg">
-          Die Datenbank ist noch nicht eingerichtet. Details stehen auf der Seite /status.
-        </p>
+        <Hinweisseite kicker="Einrichtung" titel="Datenbank noch nicht verbunden." mitLogo={false}>
+          Sobald die Firebase-Zugangsdaten bei Vercel hinterlegt sind, erscheinen hier deine Kunden. Den
+          aktuellen Stand zeigt die{" "}
+          <Link href="/status" className="text-akzent underline underline-offset-4">
+            Statusseite
+          </Link>
+          .
+        </Hinweisseite>
       )}
-    </main>
+    </>
   );
 }

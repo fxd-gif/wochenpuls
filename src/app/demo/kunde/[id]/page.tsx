@@ -10,9 +10,9 @@ export const metadata: Metadata = {
 export default async function DemoKundeSeite({ params }: PageProps<"/demo/kunde/[id]">) {
   const { id } = await params;
   return (
-    <main className="min-h-screen bg-flaeche">
+    <main className="flex-1">
       <DemoBanner />
-      <CoachKopf basis="/demo" />
+      <CoachKopf basis="/demo" etikett="Demo" />
       <DemoDetail id={id} />
     </main>
   );
