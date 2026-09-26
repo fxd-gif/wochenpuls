@@ -1,7 +1,7 @@
 "use client";
 
-import { Archive, ArchiveRestore, Check, Copy, Info, UserPlus } from "lucide-react";
-import { useActionState, useState } from "react";
+import { Archive, ArchiveRestore, Check, Copy, Info, Trash2, UserPlus } from "lucide-react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { Abschnittskopf } from "@/components/ui/Abschnittskopf";
 import { Button } from "@/components/ui/Button";
 import { eingabeKlassen, mikroKlassen, panelKlassen } from "@/components/ui/stil";
@@ -12,6 +12,7 @@ export type VerwaltungsAktionen = {
   // gibt eine Fehlermeldung zurück, oder null bei Erfolg
   anlegen: (vorher: string | null, daten: FormData) => Promise<string | null>;
   archivieren: (daten: FormData) => Promise<void>;
+  loeschen: (daten: FormData) => Promise<void>;
 };
 
 async function inDerDemo() {
@@ -69,7 +70,7 @@ export function KundenVerwaltung({
               autoComplete="off"
               placeholder="z. B. Lena oder LK"
               aria-describedby={fehler ? "anlegen-fehler" : undefined}
-              className={`${eingabeKlassen} h-12 flex-1`}
+              className={`${eingabeKlassen} h-12 sm:flex-1`}
             />
             <Button type="submit">
               <UserPlus size={17} strokeWidth={2} aria-hidden="true" />
@@ -93,18 +94,7 @@ export function KundenVerwaltung({
         ) : (
           <ul className="mt-3 divide-y divide-linie rounded-panel border border-linie bg-flaeche">
             {aktive.map((kunde) => (
-              <li key={kunde.id} className="flex flex-wrap items-center gap-3 px-5 py-4 sm:px-6">
-                <div className="mr-auto">
-                  <p className="font-serif text-[22px] leading-tight">{kunde.name}</p>
-                  <p className="font-mono text-[12px] text-text-leise">
-                    Dabei seit {datumKurz(kunde.angelegtAm)}
-                  </p>
-                </div>
-                <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto">
-                  <LinkKopieren link={links[kunde.id]} />
-                  <ArchivKnopf kunde={kunde} aktion={aktionen?.archivieren} />
-                </div>
-              </li>
+              <KundenZeile key={kunde.id} kunde={kunde} aktionen={aktionen} link={links[kunde.id]} />
             ))}
           </ul>
         )}
@@ -118,10 +108,7 @@ export function KundenVerwaltung({
           </p>
           <ul className="mt-3 divide-y divide-linie rounded-panel border border-linie bg-flaeche">
             {archivierte.map((kunde) => (
-              <li key={kunde.id} className="flex flex-wrap items-center gap-3 px-5 py-4 sm:px-6">
-                <p className="mr-auto font-serif text-[22px] leading-tight text-text-leise">{kunde.name}</p>
-                <ArchivKnopf kunde={kunde} aktion={aktionen?.archivieren} />
-              </li>
+              <KundenZeile key={kunde.id} kunde={kunde} aktionen={aktionen} archiviert />
             ))}
           </ul>
         </section>
@@ -171,5 +158,97 @@ function ArchivKnopf({ kunde, aktion }: { kunde: Kunde; aktion?: (daten: FormDat
         <span className="sr-only"> {kunde.name}</span>
       </Button>
     </form>
+  );
+}
+
+// Eine Kundenzeile: Name, Buttons, und bei Bedarf die Löschen-Rückfrage als eigene volle Zeile darunter
+// (kein Browser-Dialog): erst "Löschen" antippen, dann "Endgültig löschen" oder "Abbrechen".
+function KundenZeile({
+  kunde,
+  aktionen,
+  link,
+  archiviert,
+}: {
+  kunde: Kunde;
+  aktionen?: VerwaltungsAktionen;
+  link?: string;
+  archiviert?: boolean;
+}) {
+  const [bestaetigen, setBestaetigen] = useState(false);
+  // Fokus nur nach einem Klick verschieben, nicht beim Laden der Seite
+  const fokusNoetig = useRef(false);
+  const loeschenRef = useRef<HTMLButtonElement>(null);
+  const abbrechenRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!fokusNoetig.current) return;
+    fokusNoetig.current = false;
+    if (bestaetigen) abbrechenRef.current?.focus();
+    else loeschenRef.current?.focus();
+  }, [bestaetigen]);
+
+  function rueckfrageZeigen(zeigen: boolean) {
+    fokusNoetig.current = true;
+    setBestaetigen(zeigen);
+  }
+
+  return (
+    <li className="flex flex-col gap-3 px-5 py-4 sm:px-6">
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="mr-auto">
+          <p className={`font-serif text-[22px] leading-tight ${archiviert ? "text-text-leise" : ""}`}>
+            {kunde.name}
+          </p>
+          {!archiviert && (
+            <p className="font-mono text-[12px] text-text-leise">Dabei seit {datumKurz(kunde.angelegtAm)}</p>
+          )}
+        </div>
+        <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto">
+          {!archiviert && <LinkKopieren link={link} />}
+          <ArchivKnopf kunde={kunde} aktion={aktionen?.archivieren} />
+          <Button
+            type="button"
+            variante="ghost"
+            groesse="klein"
+            disabled={!aktionen?.loeschen || bestaetigen}
+            className={archiviert ? "w-full" : "col-span-2 w-full"}
+            ref={loeschenRef}
+            onClick={() => rueckfrageZeigen(true)}
+          >
+            <Trash2 size={15} strokeWidth={2} aria-hidden="true" />
+            Löschen
+            <span className="sr-only"> {kunde.name}</span>
+          </Button>
+        </div>
+      </div>
+
+      {bestaetigen && (
+        <div
+          role="alert"
+          className="flex flex-wrap items-center gap-3 rounded-subtil border border-ampel-rot/30 bg-ampel-rot/10 p-3"
+        >
+          <p className="flex-1 text-[13px] font-medium text-ampel-rot">
+            {kunde.name} endgültig löschen? Alle Check-ins gehen verloren.
+          </p>
+          <div className="flex gap-2">
+            <form action={aktionen?.loeschen}>
+              <input type="hidden" name="id" value={kunde.id} />
+              <Button type="submit" variante="gefahr" groesse="klein">
+                Endgültig löschen
+              </Button>
+            </form>
+            <Button
+              type="button"
+              variante="sekundaer"
+              groesse="klein"
+              ref={abbrechenRef}
+              onClick={() => rueckfrageZeigen(false)}
+            >
+              Abbrechen
+            </Button>
+          </div>
+        </div>
+      )}
+    </li>
   );
 }

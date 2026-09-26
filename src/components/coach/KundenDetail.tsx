@@ -32,13 +32,13 @@ export function KundenDetail({
     <div className="mx-auto max-w-5xl px-5 py-10 lg:px-8 lg:py-14">
       <Link
         href={basis}
-        className="inline-flex items-center gap-1.5 text-[13px] font-medium text-text-zwei transition-colors hover:text-text"
+        className="inline-flex min-h-11 items-center gap-1.5 text-[13px] font-medium text-text-zwei transition-colors hover:text-text"
       >
         <ArrowLeft size={15} strokeWidth={2} aria-hidden="true" />
         Alle Kunden
       </Link>
 
-      <div className="mt-6 flex flex-wrap items-end justify-between gap-4 border-b border-linie pb-6">
+      <div className="mt-3 flex flex-wrap items-end justify-between gap-4 border-b border-linie pb-6">
         <div>
           <Kicker>Dabei seit {datumKurz(kunde.angelegtAm)}</Kicker>
           <h1 className="mt-2 font-serif text-5xl font-normal tracking-tight">{kunde.name}</h1>

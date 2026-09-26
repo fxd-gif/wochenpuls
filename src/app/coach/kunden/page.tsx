@@ -2,7 +2,7 @@ import { headers } from "next/headers";
 import { KundenVerwaltung } from "@/components/coach/KundenVerwaltung";
 import { anmeldungPruefen } from "@/lib/server/anmeldung";
 import { alleKunden, alleTokens } from "@/lib/server/datenbank";
-import { kundeAnlegen, kundeArchivieren } from "../aktionen";
+import { kundeAnlegen, kundeArchivieren, kundeLoeschen } from "../aktionen";
 
 export default async function CoachKundenSeite() {
   await anmeldungPruefen();
@@ -18,7 +18,7 @@ export default async function CoachKundenSeite() {
     <KundenVerwaltung
       kunden={kunden}
       links={links}
-      aktionen={{ anlegen: kundeAnlegen, archivieren: kundeArchivieren }}
+      aktionen={{ anlegen: kundeAnlegen, archivieren: kundeArchivieren, loeschen: kundeLoeschen }}
     />
   );
 }

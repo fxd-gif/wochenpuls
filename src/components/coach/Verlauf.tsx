@@ -42,9 +42,9 @@ export function Verlauf({ checkins, heute }: { checkins: Checkin[]; heute: strin
         ))}
       </div>
 
-      <details className="mt-6 border-t border-linie pt-5">
-        <summary className="cursor-pointer text-[14px] font-medium text-akzent">Als Tabelle anzeigen</summary>
-        <div className="mt-3 overflow-x-auto">
+      <details className="mt-6 border-t border-linie pt-2">
+        <summary className="cursor-pointer py-3 text-[14px] font-medium text-akzent">Als Tabelle anzeigen</summary>
+        <div className="overflow-x-auto">
           <table className="w-full text-left font-mono text-[13px] tabular-nums">
             <thead className="font-sans text-text-leise">
               <tr>

@@ -67,7 +67,12 @@ export async function alleTokens(): Promise<Record<string, string>> {
   return Object.fromEntries(snap.docs.map((d) => [d.id, String(d.data().token)]));
 }
 
+// Kunden-IDs vergibt Firestore beim Anlegen selbst: 20 Buchstaben und Ziffern.
+// Alles andere (z. B. mit "/") würde auf ein anderes Dokument zeigen und wird abgewiesen.
+const ID_FORMAT = /^[A-Za-z0-9]{20}$/;
+
 export async function kundeMitId(id: string): Promise<Kunde | null> {
+  if (!ID_FORMAT.test(id)) return null;
   const d = await kunden().doc(id).get();
   return d.exists ? alsKunde(d.id, d.data()!) : null;
 }
@@ -98,7 +103,14 @@ export async function legeKundeAn(name: string, heute: string): Promise<void> {
 }
 
 export async function setzeArchiviert(id: string, archiviert: boolean): Promise<void> {
+  if (!ID_FORMAT.test(id)) return;
   await kunden().doc(id).update({ archiviert });
+}
+
+// Löscht den Kunden und alle seine Check-ins unwiderruflich (Firestore löscht Unterkollektionen nicht von selbst).
+export async function loescheKunde(id: string): Promise<void> {
+  if (!ID_FORMAT.test(id)) return;
+  await datenbank().recursiveDelete(kunden().doc(id));
 }
 
 // Ein Check-in pro Woche: Ein zweites Absenden in derselben Woche überschreibt den ersten.
