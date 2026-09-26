@@ -36,6 +36,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="de"
+      data-scroll-behavior="smooth"
       className={`${newsreader.variable} ${inter.variable} ${jetbrains.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">{children}</body>

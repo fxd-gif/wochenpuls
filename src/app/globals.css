@@ -73,6 +73,87 @@ body {
     inset 0 1px 0 rgb(240 238 232 / 0.08);
 }
 
+/*
+  Bewegung auf der Startseite. Reines CSS, kein JavaScript:
+  - nur wenn niemand "Bewegung reduzieren" eingestellt hat,
+  - Scroll-Effekte nur in Browsern, die sie können; sonst ist alles sofort ganz normal sichtbar,
+  - nur transform und opacity, damit nichts ruckelt.
+  Gestaffelt wird über die Variable --i (0, 1, 2 …) am Element.
+*/
+.fortschritt {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Rückmeldungen im Produktfenster kommen nacheinander herein, wie neue Check-ins */
+  .nacheinander {
+    animation: auftauchen 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: calc(0.3s + var(--i, 0) * 0.2s);
+  }
+  .balken-fuellen {
+    transform-origin: left;
+    animation: zeichnen 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) 0.9s both;
+  }
+
+  @supports (animation-timeline: view()) {
+    /* Taucht beim Hereinscrollen von unten auf, an den Scroll gekoppelt */
+    .einblenden {
+      animation: auftauchen linear both;
+      animation-timeline: view();
+      animation-range: entry calc(var(--i, 0) * 50px) entry calc(220px + var(--i, 0) * 50px);
+    }
+
+    /* Verbindungslinie zwischen den drei Schritten zeichnet sich beim Scrollen,
+       erst wenn die Karten darüber ganz sichtbar sind (sonst schimmert sie durch) */
+    .linie-zeichnen {
+      transform-origin: left;
+      animation: zeichnen linear both;
+      animation-timeline: view();
+      animation-range: cover 40% cover 60%;
+    }
+
+    /* Lesefortschritt als feine Linie unter der Kopfzeile */
+    .fortschritt {
+      display: block;
+      transform-origin: left;
+      animation: zeichnen linear both;
+      animation-timeline: scroll(root);
+    }
+  }
+}
+
+/* Leichte Tiefe: Produktfenster gleitet etwas langsamer aus dem Bild (nur große Bildschirme) */
+@media (prefers-reduced-motion: no-preference) and (min-width: 64rem) {
+  @supports (animation-timeline: view()) {
+    .schweben {
+      animation: schweben linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 100%;
+    }
+  }
+}
+
+@keyframes auftauchen {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+}
+@keyframes zeichnen {
+  from {
+    transform: scaleX(0);
+  }
+}
+@keyframes schweben {
+  to {
+    transform: translateY(-56px);
+  }
+}
+
 /* Schieberegler im Stil des Entwurfs */
 input[type="range"] {
   appearance: none;

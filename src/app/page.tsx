@@ -1,5 +1,6 @@
 import { ArrowRight, CircleCheck, Clock3, Eye, Link2 } from "lucide-react";
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { AmpelMarke, ampelStufen, type AmpelStufe } from "@/components/AmpelMarke";
 import { KundenKarte } from "@/components/coach/KundenKarte";
 import { Etikett, Logo } from "@/components/Logo";
@@ -23,6 +24,9 @@ const mia = beispiel("mia");
 const aylin = beispiel("aylin");
 
 const innen = "mx-auto w-full max-w-7xl";
+
+// Reihenfolge für gestaffelte Bewegung (siehe globals.css)
+const reihe = (i: number) => ({ "--i": i }) as CSSProperties;
 
 const navigation = [
   { href: "#uebersicht", text: "Übersicht" },
@@ -100,6 +104,7 @@ export default function Startseite() {
             </ButtonLink>
           </div>
         </div>
+        <div aria-hidden="true" className="fortschritt absolute inset-x-0 -bottom-px h-px bg-akzent/70" />
       </header>
 
       <main className="flex-1 pt-16">
@@ -162,7 +167,7 @@ export default function Startseite() {
             </div>
 
             {/* Produktfenster */}
-            <div className="relative lg:col-span-5">
+            <div className="schweben relative lg:col-span-5">
               <div className="halo overflow-hidden rounded-panel border border-linie-fokus bg-[#141815]">
                 <div className="flex items-center justify-between border-b border-linie bg-[#181D1A] px-4 py-3">
                   <div className="flex items-center gap-2">
@@ -191,13 +196,19 @@ export default function Startseite() {
                         3 Rückmeldungen eingegangen
                       </p>
                     </div>
-                    <span className="shrink-0 rounded-subtil border border-ampel-rot/30 bg-ampel-rot/12 px-2.5 py-1 font-mono text-[11px] font-medium text-ampel-rot">
+                    <span
+                      style={reihe(3)}
+                      className="nacheinander shrink-0 rounded-subtil border border-ampel-rot/30 bg-ampel-rot/12 px-2.5 py-1 font-mono text-[11px] font-medium text-ampel-rot"
+                    >
                       ▲ {anzahlRot} Handlungsbedarf
                     </span>
                   </div>
-                  <FensterZeile {...lena} betont />
-                  <FensterZeile {...mia} />
-                  <div className="flex items-center justify-between rounded-sm border border-linie bg-flaeche/80 p-3 text-[12px]">
+                  <FensterZeile {...lena} i={0} betont />
+                  <FensterZeile {...mia} i={1} />
+                  <div
+                    style={reihe(2)}
+                    className="nacheinander flex items-center justify-between rounded-sm border border-linie bg-flaeche/80 p-3 text-[12px]"
+                  >
                     <div className="flex items-center gap-2.5">
                       <span aria-hidden="true" className="size-2 rounded-full bg-ampel-gruen" />
                       <span className="font-medium">{aylin.kunde.name}</span>
@@ -224,20 +235,22 @@ export default function Startseite() {
         {/* Diese Woche */}
         <section id="uebersicht" className="scroll-mt-16 border-b border-linie px-5 py-20 lg:px-8 lg:py-28">
           <div className={innen}>
-            <Abschnittskopf
-              seitlich
-              kicker="Aus der Demo"
-              titel="Diese Woche"
-              text="So sieht deine Übersicht aus: Jeder Kunde bekommt eine Ampel und einen Satz, warum. Ohne Suchen in Chats."
-            />
+            <div className="einblenden">
+              <Abschnittskopf
+                seitlich
+                kicker="Aus der Demo"
+                titel="Diese Woche"
+                text="So sieht deine Übersicht aus: Jeder Kunde bekommt eine Ampel und einen Satz, warum. Ohne Suchen in Chats."
+              />
+            </div>
             <div className="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-12">
-              <div className="lg:col-span-5">
+              <div style={reihe(0)} className="einblenden lg:col-span-5">
                 <KundenKarte {...lena} href="/demo/kunde/lena" gross zeitlos />
               </div>
-              <div className="lg:col-span-4">
+              <div style={reihe(1)} className="einblenden lg:col-span-4">
                 <KundenKarte {...mia} href="/demo/kunde/mia" zeitlos />
               </div>
-              <div className="lg:col-span-3">
+              <div style={reihe(2)} className="einblenden lg:col-span-3">
                 <KundenKarte {...aylin} href="/demo/kunde/aylin" zeitlos />
               </div>
             </div>
@@ -247,10 +260,11 @@ export default function Startseite() {
         {/* Eckdaten */}
         <section className="border-b border-linie bg-abschnitt px-5 py-20 lg:px-8">
           <dl className="mx-auto grid max-w-6xl grid-cols-1 divide-y divide-linie md:grid-cols-3 md:divide-x md:divide-y-0">
-            {eckdaten.map((e) => (
+            {eckdaten.map((e, i) => (
               <div
                 key={e.wert}
-                className="flex flex-col py-8 text-center md:px-10 md:py-4 md:text-left md:first:pl-0"
+                style={reihe(i)}
+                className="einblenden flex flex-col py-8 text-center md:px-10 md:py-4 md:text-left md:first:pl-0"
               >
                 <dt className="order-2 mt-3">
                   <span className="block text-[16px] font-semibold">{e.titel}</span>
@@ -274,66 +288,74 @@ export default function Startseite() {
           className="scroll-mt-16 border-b border-linie px-5 py-24 lg:px-8 lg:py-32"
         >
           <div className="mx-auto max-w-6xl">
-            <Abschnittskopf
-              kicker="Ablauf"
-              titel="So funktioniert es"
-              text="Drei Schritte zu entspannter Betreuung ohne Nachrichten-Dschungel."
-            />
-            <ol className="relative grid grid-cols-1 gap-8 md:grid-cols-3">
+            <div className="einblenden">
+              <Abschnittskopf
+                kicker="Ablauf"
+                titel="So funktioniert es"
+                text="Drei Schritte zu entspannter Betreuung ohne Nachrichten-Dschungel."
+              />
+            </div>
+            <div className="relative">
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute left-[16%] right-[16%] top-[52px] hidden h-px items-center justify-between bg-linear-to-r from-linie-fokus via-akzent/40 to-linie-fokus md:flex"
+                className="linie-zeichnen pointer-events-none absolute left-[16%] right-[16%] top-[52px] hidden h-px items-center justify-between bg-linear-to-r from-linie-fokus via-akzent/40 to-linie-fokus md:flex"
               >
                 <span className="size-2 rounded-full border border-leinwand bg-akzent/60" />
                 <span className="size-2 rounded-full border border-leinwand bg-akzent/60" />
                 <span className="size-2 rounded-full border border-leinwand bg-akzent/60" />
               </div>
-              {schritte.map(({ titel, text, Icon, fuss, marke }, i) => (
-                <li
-                  key={titel}
-                  className="group relative z-10 flex flex-col justify-between rounded-panel border border-linie-fokus bg-[#151916] p-7 transition-colors hover:border-akzent/40"
-                >
-                  <div>
-                    <div className="mb-6 flex items-center justify-between">
-                      <span className="flex size-10 items-center justify-center rounded-full border border-linie bg-flaeche-hoch font-serif text-[18px] text-akzent transition-colors group-hover:border-akzent/60">
-                        0{i + 1}
-                      </span>
-                      <span
-                        className={`font-mono text-[11px] uppercase tracking-[0.1em] ${
-                          i === 2 ? "font-semibold text-akzent" : "text-text-leise"
-                        }`}
-                      >
-                        {marke}
-                      </span>
+              <ol className="grid grid-cols-1 gap-8 md:grid-cols-3">
+                {schritte.map(({ titel, text, Icon, fuss, marke }, i) => (
+                  <li
+                    key={titel}
+                    style={reihe(i)}
+                    className="einblenden group relative z-10 flex flex-col justify-between rounded-panel border border-linie-fokus bg-[#151916] p-7 transition-colors hover:border-akzent/40"
+                  >
+                    <div>
+                      <div className="mb-6 flex items-center justify-between">
+                        <span className="flex size-10 items-center justify-center rounded-full border border-linie bg-flaeche-hoch font-serif text-[18px] text-akzent transition-colors group-hover:border-akzent/60">
+                          0{i + 1}
+                        </span>
+                        <span
+                          className={`font-mono text-[11px] uppercase tracking-[0.1em] ${
+                            i === 2 ? "font-semibold text-akzent" : "text-text-leise"
+                          }`}
+                        >
+                          {marke}
+                        </span>
+                      </div>
+                      <h3 className="mb-3 text-[18px] font-semibold">{titel}</h3>
+                      <p className="text-[14px] leading-relaxed text-text-zwei">{text}</p>
                     </div>
-                    <h3 className="mb-3 text-[18px] font-semibold">{titel}</h3>
-                    <p className="text-[14px] leading-relaxed text-text-zwei">{text}</p>
-                  </div>
-                  <p className="mt-8 flex items-center gap-2 border-t border-linie pt-4 text-[13px] font-medium text-text-zwei">
-                    <Icon size={16} strokeWidth={1.75} className="text-akzent" aria-hidden="true" />
-                    {fuss}
-                  </p>
-                </li>
-              ))}
-            </ol>
+                    <p className="mt-8 flex items-center gap-2 border-t border-linie pt-4 text-[13px] font-medium text-text-zwei">
+                      <Icon size={16} strokeWidth={1.75} className="text-akzent" aria-hidden="true" />
+                      {fuss}
+                    </p>
+                  </li>
+                ))}
+              </ol>
+            </div>
           </div>
         </section>
 
         {/* Ampel-System */}
         <section id="ampel" className="scroll-mt-16 border-b border-linie px-5 py-24 lg:px-8 lg:py-32">
           <div className="mx-auto max-w-6xl">
-            <Abschnittskopf
-              kicker="Barrierefreies Ampel-System"
-              titel="Vier Zustände. Ein Blick."
-              text="Jeder Zustand hat eine eigene Farbe, ein eindeutiges Symbol und ein klares Wort, damit ihn auch farbenblinde Coaches sofort erkennen."
-            />
+            <div className="einblenden">
+              <Abschnittskopf
+                kicker="Barrierefreies Ampel-System"
+                titel="Vier Zustände. Ein Blick."
+                text="Jeder Zustand hat eine eigene Farbe, ein eindeutiges Symbol und ein klares Wort, damit ihn auch farbenblinde Coaches sofort erkennen."
+              />
+            </div>
             <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-              {ampelKarten.map(({ stufe, nummer, titel, fuss }) => {
+              {ampelKarten.map(({ stufe, nummer, titel, fuss }, i) => {
                 const stil = ampelStufen[stufe];
                 return (
                   <li
                     key={stufe}
-                    className={`flex flex-col justify-between rounded-panel bg-flaeche p-6 ${
+                    style={reihe(i)}
+                    className={`einblenden flex flex-col justify-between rounded-panel bg-flaeche p-6 ${
                       stufe === "rot"
                         ? `border-2 ${stil.rand}`
                         : `border ${stufe === "neu" ? "border-linie" : stil.rand}`
@@ -366,7 +388,7 @@ export default function Startseite() {
         {/* Ausprobieren */}
         <section id="ausprobieren" className="scroll-mt-16 border-b border-linie px-5 py-24 lg:px-8 lg:py-32">
           <div className="mx-auto max-w-5xl">
-            <div className="mx-auto mb-12 max-w-2xl text-center">
+            <div className="einblenden mx-auto mb-12 max-w-2xl text-center">
               <span className="mb-3 inline-flex items-center gap-2 rounded-full border border-akzent/20 bg-akzent/10 px-3 py-1 font-mono text-[11px] uppercase tracking-[0.1em] text-akzent">
                 <span
                   aria-hidden="true"
@@ -382,7 +404,9 @@ export default function Startseite() {
                 kompletten Check-in aus, genau wie deine Kunden.
               </p>
             </div>
-            <Simulator />
+            <div className="einblenden">
+              <Simulator />
+            </div>
           </div>
         </section>
 
@@ -424,12 +448,18 @@ export default function Startseite() {
 }
 
 // Eine Kundenzeile im Produktfenster oben
-function FensterZeile({ kunde, ampel, betont = false }: ReturnType<typeof beispiel> & { betont?: boolean }) {
+function FensterZeile({
+  kunde,
+  ampel,
+  i,
+  betont = false,
+}: ReturnType<typeof beispiel> & { i: number; betont?: boolean }) {
   const stil = ampelStufen[ampel.stufe];
   const l = ampel.letzter;
   return (
     <div
-      className={`flex flex-col gap-2.5 rounded-sm border p-3.5 ${betont ? stil.getoent : `bg-flaeche ${stil.rand}`}`}
+      style={reihe(i)}
+      className={`nacheinander flex flex-col gap-2.5 rounded-sm border p-3.5 ${betont ? stil.getoent : `bg-flaeche ${stil.rand}`}`}
     >
       <div className="flex items-center justify-between gap-2">
         <span className="text-[14px] font-semibold">{kunde.name}</span>
@@ -439,7 +469,7 @@ function FensterZeile({ kunde, ampel, betont = false }: ReturnType<typeof beispi
       {betont && l && (
         <div className="h-1 w-full overflow-hidden rounded-full bg-spur">
           <div
-            className={`h-full ${stil.punkt}`}
+            className={`balken-fuellen h-full ${stil.punkt}`}
             style={{ width: `${(l.trainingsGeschafft / Math.max(l.trainingsGeplant, 1)) * 100}%` }}
           />
         </div>
