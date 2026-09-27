@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "vitest run"
+    "test": "vitest run",
+    "emulatoren": "npx --yes firebase-tools@15.31.0 emulators:start --only auth,firestore --project demo-wochenpuls"
   },
   "dependencies": {
     "@opentelemetry/api": "^1.9.1",
