@@ -50,7 +50,7 @@ export function KundenFilter({
               type="button"
               aria-pressed={aktiv}
               onClick={() => setStufe(aktiv ? null : s)}
-              className={`flex items-center justify-between gap-2 rounded-panel border px-4 py-3.5 text-left transition-colors ${
+              className={`flex items-center justify-between gap-2 rounded-panel border px-4 py-3.5 text-left transition-[color,background-color,border-color,transform] active:scale-[0.98] ${
                 aktiv
                   ? `border-transparent bg-flaeche-hoch ring-2 ring-inset ring-current ${ampelStufen[s].text}`
                   : "border-linie bg-flaeche hover:border-linie-fokus hover:bg-flaeche-hoch"
@@ -79,8 +79,18 @@ export function KundenFilter({
               onChange={(e) => setSuche(e.target.value)}
               placeholder="Name suchen"
               autoComplete="off"
-              className={`${eingabeKlassen} h-11 pl-10`}
+              className={`${eingabeKlassen} h-11 pl-10 pr-11`}
             />
+            {suche && (
+              <button
+                type="button"
+                onClick={() => setSuche("")}
+                className="absolute right-0 top-0 inline-flex size-11 items-center justify-center text-text-leise transition-colors hover:text-text"
+              >
+                <X size={16} strokeWidth={2} aria-hidden="true" />
+                <span className="sr-only">Suche leeren</span>
+              </button>
+            )}
           </label>
           <p aria-live="polite" className="flex items-center gap-3 text-[13px] text-text-leise">
             {gefiltert ? `${sichtbar.length + sichtbarWiderrufen.length} von ${gesamt} Kunden` : `${gesamt} Kunden`}
@@ -104,19 +114,21 @@ export function KundenFilter({
           <p className="mt-2 text-text-zwei">
             {stufe && anzahl(stufe) === 0
               ? `Gerade steht kein Kunde auf „${ampelStufen[stufe].wort}“.`
-              : "Prüf die Schreibweise oder setz den Filter zurück."}
+              : stufe && eintraege.some((e) => passt(e.kunde))
+                ? `Passende Kunden stehen auf einer anderen Farbe als „${ampelStufen[stufe].wort}“.`
+                : "Prüf die Schreibweise oder setz den Filter zurück."}
           </p>
         </div>
       )}
 
       <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {sichtbar.map(({ kunde, ampel }) => (
-          <li key={kunde.id}>
+          <li key={kunde.id} className="filter-ein">
             <KundenKarte kunde={kunde} ampel={ampel} href={`${basis}/kunde/${kunde.id}`} ebene="h2" />
           </li>
         ))}
         {sichtbarWiderrufen.map((kunde) => (
-          <li key={kunde.id}>
+          <li key={kunde.id} className="filter-ein">
             <WiderrufKarte kunde={kunde} href={`${basis}/kunde/${kunde.id}`} />
           </li>
         ))}

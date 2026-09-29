@@ -63,7 +63,7 @@ html[data-theme="light"] {
   --color-leinwand: #f5f3ee;
   --color-abschnitt: #eeebe4;
   --color-flaeche: #fbfaf7;
-  --color-flaeche-hoch: #ffffff;
+  --color-flaeche-hoch: #fefdfb;
   --color-flaeche-alt: #efece5;
   --color-spur: #e2ded5;
 
@@ -77,14 +77,14 @@ html[data-theme="light"] {
 
   --color-akzent: #37705b;
   --color-akzent-hover: #2f614e;
-  --color-auf-akzent: #ffffff;
+  --color-auf-akzent: #fbfaf7;
 
   --color-ampel-rot: #ad3d34;
   --color-ampel-gelb: #8d5c14;
   --color-ampel-gruen: #37705b;
   --color-ampel-neu: #646a64;
 
-  --schatten-halo: 0 20px 48px -16px rgb(40 36 28 / 0.18), inset 0 1px 0 rgb(255 255 255 / 0.9);
+  --schatten-halo: 0 20px 48px -16px rgb(40 36 28 / 0.18), inset 0 1px 0 rgb(254 253 251 / 0.9);
 }
 
 body {
@@ -186,6 +186,24 @@ body {
 @keyframes schweben {
   to {
     transform: translateY(-56px);
+  }
+}
+
+/* Suchfeld: das blaue Standard-X des Browsers ausblenden, wir haben ein eigenes */
+input[type="search"]::-webkit-search-cancel-button {
+  appearance: none;
+}
+
+/* Karten, die beim Filtern neu dazukommen, blenden weich ein */
+@media (prefers-reduced-motion: no-preference) {
+  .filter-ein {
+    animation: filter-ein 0.3s ease-out both;
+  }
+}
+@keyframes filter-ein {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
   }
 }
 

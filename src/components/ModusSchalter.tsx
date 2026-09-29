@@ -5,7 +5,8 @@ import { Moon, Sun } from "lucide-react";
 const schluessel = "wochenpuls-modus";
 
 // Läuft im <head>, bevor die Seite gezeichnet wird: So blitzt beim Laden nie die falsche Farbe auf.
-export const modusSkript = `try{if(localStorage.getItem("${schluessel}")==="hell")document.documentElement.dataset.theme="light"}catch(e){}`;
+// Ohne eigene Wahl gilt die Einstellung des Geräts (hell oder dunkel).
+export const modusSkript = `try{var m=localStorage.getItem("${schluessel}");if(m==="hell"||(!m&&matchMedia("(prefers-color-scheme: light)").matches))document.documentElement.dataset.theme="light"}catch(e){}`;
 
 function umschalten() {
   const html = document.documentElement;
