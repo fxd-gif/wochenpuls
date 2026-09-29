@@ -270,7 +270,7 @@ export default function DatenschutzSeite() {
         <Abschnitt titel="WhatsApp-Erinnerung und Export">
           <p>
             <strong className="font-semibold text-text">WhatsApp:</strong> Wochenpuls übermittelt nichts an
-            WhatsApp und speichert keine Telefonnummern. Erst wenn der Coach auf „Per WhatsApp erinnern“
+            WhatsApp und speichert keine Telefonnummern. Erst wenn der Coach auf „Per WhatsApp erinnern“ oder „Per WhatsApp schicken“
             tippt, öffnet sein Gerät WhatsApp (Meta) mit einem vorbereiteten Text. Er enthält den Vornamen des
             Kunden und dessen persönlichen Link; den Empfänger wählt der Coach dort aus. Für WhatsApp gelten
             die Bedingungen von WhatsApp.

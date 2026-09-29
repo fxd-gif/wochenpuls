@@ -1,11 +1,12 @@
 "use client";
 
-import { Archive, ArchiveRestore, Check, Copy, Info, RefreshCw, Trash2, UserPlus } from "lucide-react";
+import { Archive, ArchiveRestore, Check, Copy, Info, MessageCircle, RefreshCw, Trash2, UserPlus } from "lucide-react";
 import { useActionState, useEffect, useRef, useState } from "react";
 import { Abschnittskopf } from "@/components/ui/Abschnittskopf";
-import { Button } from "@/components/ui/Button";
+import { Button, buttonKlassen } from "@/components/ui/Button";
 import { eingabeKlassen, mikroKlassen, panelKlassen } from "@/components/ui/stil";
 import type { Kunde } from "@/lib/checkin";
+import { whatsappLink } from "@/lib/whatsapp";
 import { datumKurz } from "@/lib/woche";
 
 export type VerwaltungsAktionen = {
@@ -183,6 +184,36 @@ function LinkKopieren({ link }: { link?: string }) {
   );
 }
 
+function WhatsAppSenden({ kunde, link }: { kunde: Kunde; link?: string }) {
+  const inhalt = (
+    <>
+      <MessageCircle size={15} strokeWidth={2} aria-hidden="true" />
+      Per WhatsApp schicken
+      <span className="sr-only"> an {kunde.name}{link ? " (öffnet in neuem Tab)" : ""}</span>
+    </>
+  );
+  if (!link) {
+    return (
+      <Button type="button" variante="sekundaer" groesse="klein" disabled className="col-span-2 w-full">
+        {inhalt}
+      </Button>
+    );
+  }
+  const vorname = kunde.name.split(" ")[0];
+  return (
+    <a
+      href={whatsappLink(
+        `Hallo ${vorname}, hier ist dein persönlicher Link für den Wochen-Check-in. Einmal pro Woche, dauert etwa 2 Minuten: ${link}`,
+      )}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={buttonKlassen("sekundaer", "klein", "col-span-2 w-full")}
+    >
+      {inhalt}
+    </a>
+  );
+}
+
 function ArchivKnopf({ kunde, aktion }: { kunde: Kunde; aktion?: (daten: FormData) => Promise<void> }) {
   return (
     <form action={aktion} className="contents sm:block">
@@ -247,6 +278,7 @@ function KundenZeile({
         <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto">
           {!archiviert && <LinkKopieren link={link} />}
           <ArchivKnopf kunde={kunde} aktion={aktionen?.archivieren} />
+          {!archiviert && <WhatsAppSenden kunde={kunde} link={link} />}
           {!archiviert && (
             <Button
               type="button"

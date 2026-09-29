@@ -7,6 +7,7 @@ import { buttonKlassen } from "@/components/ui/Button";
 import { mikroKlassen, panelKlassen } from "@/components/ui/stil";
 import { bewerte } from "@/lib/ampel";
 import { FOKUS_ANTWORTEN, type Checkin, type Kunde } from "@/lib/checkin";
+import { whatsappLink } from "@/lib/whatsapp";
 import { datumKurz, datumMitJahr } from "@/lib/woche";
 import { Notizen } from "./Notizen";
 import { Verlauf } from "./Verlauf";
@@ -68,9 +69,9 @@ export function KundenDetail({
         <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3">
           {!kunde.archiviert && !widerrufen && ampel.offen && (
             <a
-              href={`https://wa.me/?text=${encodeURIComponent(
+              href={whatsappLink(
                 `Hallo ${kunde.name}, kurze Erinnerung an deinen Wochen-Check-in. Dauert etwa 2 Minuten: ${coach.link}`,
-              )}`}
+              )}
               target="_blank"
               rel="noopener noreferrer"
               className={buttonKlassen("sekundaer", "klein")}
