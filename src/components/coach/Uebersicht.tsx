@@ -1,10 +1,10 @@
 import { AmpelMarke, type AmpelStufe } from "@/components/AmpelMarke";
 import { Abschnittskopf } from "@/components/ui/Abschnittskopf";
 import { ButtonLink } from "@/components/ui/Button";
-import { bewerte, sortiereNachAmpel } from "@/lib/ampel";
 import type { Checkin, Kunde } from "@/lib/checkin";
+import { ordneUebersicht } from "@/lib/uebersicht";
 import { checkinWoche, datumKurz } from "@/lib/woche";
-import { KundenKarte } from "./KundenKarte";
+import { KundenKarte, WiderrufKarte } from "./KundenKarte";
 
 // Alle Kunden auf einer Seite, Rot zuerst. Funktioniert für Demo und echte Daten gleich.
 export function Uebersicht({
@@ -18,9 +18,7 @@ export function Uebersicht({
   heute: string;
   basis: string; // "/demo" oder "/coach"
 }) {
-  const eintraege = sortiereNachAmpel(
-    kunden.filter((k) => !k.archiviert).map((kunde) => ({ kunde, ampel: bewerte(kunde, checkins, heute) })),
-  );
+  const { bewertet: eintraege, widerrufen } = ordneUebersicht(kunden, checkins, heute);
   const anzahl = (stufe: AmpelStufe) => eintraege.filter((e) => e.ampel.stufe === stufe).length;
 
   return (
@@ -48,7 +46,7 @@ export function Uebersicht({
         ))}
       </dl>
 
-      {eintraege.length === 0 && (
+      {eintraege.length === 0 && widerrufen.length === 0 && (
         <div className="mt-8 rounded-panel border border-linie bg-flaeche p-8">
           <p className="font-serif text-2xl">Noch keine Kunden.</p>
           <p className="mt-2 text-text-zwei">
@@ -64,6 +62,11 @@ export function Uebersicht({
         {eintraege.map(({ kunde, ampel }) => (
           <li key={kunde.id}>
             <KundenKarte kunde={kunde} ampel={ampel} href={`${basis}/kunde/${kunde.id}`} ebene="h2" />
+          </li>
+        ))}
+        {widerrufen.map((kunde) => (
+          <li key={kunde.id}>
+            <WiderrufKarte kunde={kunde} href={`${basis}/kunde/${kunde.id}`} />
           </li>
         ))}
       </ul>

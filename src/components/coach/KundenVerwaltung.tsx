@@ -1,6 +1,6 @@
 "use client";
 
-import { Archive, ArchiveRestore, Check, Copy, Info, Trash2, UserPlus } from "lucide-react";
+import { Archive, ArchiveRestore, Check, Copy, Info, RefreshCw, Trash2, UserPlus } from "lucide-react";
 import { useActionState, useEffect, useRef, useState } from "react";
 import { Abschnittskopf } from "@/components/ui/Abschnittskopf";
 import { Button } from "@/components/ui/Button";
@@ -13,6 +13,7 @@ export type VerwaltungsAktionen = {
   anlegen: (vorher: string | null, daten: FormData) => Promise<string | null>;
   archivieren: (daten: FormData) => Promise<void>;
   loeschen: (daten: FormData) => Promise<void>;
+  linkErneuern: (daten: FormData) => Promise<void>;
 };
 
 async function inDerDemo() {
@@ -24,10 +25,12 @@ export function KundenVerwaltung({
   kunden,
   links = {},
   aktionen,
+  maxKunden,
 }: {
   kunden: Kunde[];
   links?: Record<string, string>; // Kunden-ID → persönlicher Link
   aktionen?: VerwaltungsAktionen;
+  maxKunden?: number; // nur in der echten App; archivierte Kunden zählen mit
 }) {
   const demo = !aktionen;
   const [fehler, anlegen, legtAn] = useActionState(aktionen?.anlegen ?? inDerDemo, null);
@@ -60,6 +63,7 @@ export function KundenVerwaltung({
           </label>
           <p className="mt-1 text-[13px] text-text-leise">
             Nur Vorname oder Kürzel, kein vollständiger Name.
+            {maxKunden !== undefined && ` ${kunden.length} von ${maxKunden} Kunden.`}
           </p>
           <div className="mt-4 flex flex-col gap-3 sm:flex-row">
             <input
@@ -83,6 +87,7 @@ export function KundenVerwaltung({
             </p>
           )}
         </fieldset>
+        <DatenschutzHinweis />
       </form>
 
       <section className="mt-10">
@@ -113,6 +118,41 @@ export function KundenVerwaltung({
           </ul>
         </section>
       )}
+    </div>
+  );
+}
+
+// AC-148: Coaches informieren ihre Kunden selbst. Der Knopf liegt außerhalb des fieldset und
+// funktioniert deshalb auch in der Demo.
+function DatenschutzHinweis() {
+  const [kopiert, setKopiert] = useState(false);
+  return (
+    <div className="mt-5 flex flex-col gap-3 border-t border-linie pt-4 sm:flex-row sm:items-center sm:justify-between">
+      <p className="text-[13px] leading-relaxed text-text-zwei">
+        Sag deinem Kunden, dass du Wochenpuls nutzt, und schick ihm den Link zur Datenschutzerklärung.
+      </p>
+      <Button
+        type="button"
+        variante="sekundaer"
+        groesse="klein"
+        className="shrink-0"
+        onClick={async () => {
+          try {
+            await navigator.clipboard.writeText(`${location.origin}/datenschutz`);
+          } catch {
+            return;
+          }
+          setKopiert(true);
+          setTimeout(() => setKopiert(false), 2000);
+        }}
+      >
+        {kopiert ? (
+          <Check size={15} strokeWidth={2} aria-hidden="true" />
+        ) : (
+          <Copy size={15} strokeWidth={2} aria-hidden="true" />
+        )}
+        <span aria-live="polite">{kopiert ? "Kopiert!" : "Link kopieren"}</span>
+      </Button>
     </div>
   );
 }
@@ -175,6 +215,7 @@ function KundenZeile({
   archiviert?: boolean;
 }) {
   const [bestaetigen, setBestaetigen] = useState(false);
+  const [linkFrage, setLinkFrage] = useState(false);
   // Fokus nur nach einem Klick verschieben, nicht beim Laden der Seite
   const fokusNoetig = useRef(false);
   const loeschenRef = useRef<HTMLButtonElement>(null);
@@ -206,6 +247,20 @@ function KundenZeile({
         <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto">
           {!archiviert && <LinkKopieren link={link} />}
           <ArchivKnopf kunde={kunde} aktion={aktionen?.archivieren} />
+          {!archiviert && (
+            <Button
+              type="button"
+              variante="ghost"
+              groesse="klein"
+              disabled={!aktionen?.linkErneuern || linkFrage}
+              className="col-span-2 w-full"
+              onClick={() => setLinkFrage(true)}
+            >
+              <RefreshCw size={15} strokeWidth={2} aria-hidden="true" />
+              Link neu erzeugen
+              <span className="sr-only"> {kunde.name}</span>
+            </Button>
+          )}
           <Button
             type="button"
             variante="ghost"
@@ -221,6 +276,34 @@ function KundenZeile({
           </Button>
         </div>
       </div>
+
+      {linkFrage && (
+        <div
+          role="alert"
+          className="flex flex-wrap items-center gap-3 rounded-subtil border border-linie-fokus bg-flaeche-alt p-3"
+        >
+          <p className="flex-1 text-[13px] font-medium text-text-zwei">
+            Der alte Link funktioniert danach nicht mehr.
+          </p>
+          <div className="flex gap-2">
+            <form
+              action={async (daten) => {
+                await aktionen?.linkErneuern(daten);
+                setLinkFrage(false);
+              }}
+            >
+              <input type="hidden" name="id" value={kunde.id} />
+              <Button type="submit" groesse="klein">
+                Link neu erzeugen
+                <span className="sr-only"> für {kunde.name}</span>
+              </Button>
+            </form>
+            <Button type="button" variante="sekundaer" groesse="klein" onClick={() => setLinkFrage(false)}>
+              Abbrechen
+            </Button>
+          </div>
+        </div>
+      )}
 
       {bestaetigen && (
         <div

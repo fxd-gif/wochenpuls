@@ -1,7 +1,8 @@
 import Link from "next/link";
 
 // Das Wochenpuls-Zeichen: Pulslinie im Kästchen, daneben der Name mit pulsierendem Punkt
-export function Logo({ href = "/" }: { href?: string }) {
+// kompakt: auf schmalen Bildschirmen nur das Zeichen (der Name bleibt für Screenreader)
+export function Logo({ href = "/", kompakt = false }: { href?: string; kompakt?: boolean }) {
   return (
     <Link href={href} className="group flex min-h-11 items-center gap-2.5">
       <span className="flex size-8 items-center justify-center rounded-subtil border border-linie-fokus bg-flaeche-hoch transition-colors group-hover:border-akzent/50">
@@ -18,7 +19,7 @@ export function Logo({ href = "/" }: { href?: string }) {
           <path d="M2 12h4l2.5-6 4 12 3-8 2.5 5 2-3h4" />
         </svg>
       </span>
-      <span className="flex items-baseline gap-1.5">
+      <span className={`items-baseline gap-1.5 ${kompakt ? "sr-only sm:not-sr-only sm:flex" : "flex"}`}>
         <span className="text-[15px] font-semibold tracking-tight text-text">Wochenpuls</span>
         <span aria-hidden="true" className="size-1.5 rounded-full bg-akzent motion-safe:animate-pulse" />
       </span>

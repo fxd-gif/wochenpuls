@@ -2,7 +2,8 @@ import "server-only";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { cache } from "react";
-import { anmeldeDienst, coachExistiert, datenbankEingerichtet } from "./datenbank";
+import { AVV_FASSUNG } from "@/lib/rechtstexte";
+import { anmeldeDienst, coachDaten, datenbankEingerichtet } from "./datenbank";
 
 // Coach-Login mit Google (Firebase Authentication).
 // Ablauf: Der Browser meldet sich bei Google an und schickt den Nachweis (ID-Token) an den Server.
@@ -13,7 +14,15 @@ import { anmeldeDienst, coachExistiert, datenbankEingerichtet } from "./datenban
 const COOKIE = "wochenpuls-coach";
 const GUELTIG_TAGE = 14; // Firebase erlaubt höchstens 14 Tage
 
-export type Coach = { uid: string; email: string; istAdmin: boolean };
+// avvFassung und avvAm: Zustimmung zum Vertrag zur Auftragsverarbeitung (beim Admin nicht vorhanden)
+export type Coach = { uid: string; email: string; istAdmin: boolean; avvFassung?: string; avvAm?: string };
+
+// Muss dieser Coach dem geänderten Vertrag erst zustimmen? Der Admin nie.
+export function avvZustimmungOffen(coach: Coach): boolean {
+  return !coach.istAdmin && coach.avvFassung !== AVV_FASSUNG;
+}
+
+export const AVV_GEAENDERT = "Der Vertrag zur Auftragsverarbeitung wurde geändert.";
 
 export function googleAnmeldungEingerichtet(): boolean {
   return Boolean(
@@ -48,21 +57,37 @@ export async function sitzungStarten(idToken: string): Promise<void> {
   });
 }
 
+// Abmelden macht die Sitzung auch serverseitig ungültig (Widerruf), nicht nur das Cookie im Browser.
 export async function sitzungBeenden(): Promise<void> {
-  (await cookies()).delete(COOKIE);
+  const speicher = await cookies();
+  const wert = speicher.get(COOKIE)?.value;
+  if (wert && anmeldungEingerichtet()) {
+    try {
+      const dienst = anmeldeDienst();
+      await dienst.revokeRefreshTokens((await dienst.verifySessionCookie(wert)).uid);
+    } catch {
+      // abgelaufen, ungültig oder Firebase nicht erreichbar: das Cookie wird trotzdem gelöscht
+    }
+  }
+  speicher.delete(COOKIE);
 }
 
 // Einmal pro Seitenaufruf geprüft (cache), auch wenn Layout und Seite beide fragen.
 // Gesperrt wird ein Coach, indem man seinen Eintrag unter "coaches" löscht: dann greift die Sitzung sofort nicht mehr.
+// Dasselbe gilt, sobald die Kontolöschung begonnen hat (Feld geloeschtAm).
 export const aktuellerCoach = cache(async (): Promise<Coach | null> => {
   const wert = (await cookies()).get(COOKIE)?.value; // zuerst: macht die Seite immer dynamisch
   if (!wert || !anmeldungEingerichtet()) return null;
   try {
-    const daten = await anmeldeDienst().verifySessionCookie(wert);
+    // "true": auch widerrufene Sitzungen (Abmelden, gelöschter Nutzer) werden abgewiesen. Kostet einen
+    // Netzwerk-Aufruf, der dank cache() nur einmal pro Seitenaufruf anfällt.
+    const daten = await anmeldeDienst().verifySessionCookie(wert, true);
     const email = daten.email ?? "";
     const admin = istAdminAdresse(email, daten.email_verified);
-    if (!admin && !(await coachExistiert(daten.uid))) return null;
-    return { uid: daten.uid, email, istAdmin: admin };
+    if (admin) return { uid: daten.uid, email, istAdmin: true };
+    const eintrag = await coachDaten(daten.uid);
+    if (!eintrag) return null;
+    return { uid: daten.uid, email, istAdmin: false, ...eintrag };
   } catch {
     return null; // abgelaufen oder ungültig
   }

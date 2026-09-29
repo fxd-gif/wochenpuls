@@ -60,6 +60,7 @@ function meldungZuFehler(code: string): string | null {
 
 export function LoginFormular() {
   const [code, setCode] = useState("");
+  const [avv, setAvv] = useState(false);
   const [codeOffen, setCodeOffen] = useState(false);
   const [fehler, setFehler] = useState<string | null>(null);
   const [appBrowser, setAppBrowser] = useState(false);
@@ -74,6 +75,11 @@ export function LoginFormular() {
 
   async function anmelden() {
     setFehler(null);
+    if (code.trim() && !avv) {
+      setFehler("Bitte bestätige den Vertrag zur Auftragsverarbeitung.");
+      setCodeOffen(true);
+      return;
+    }
     let idToken: string;
     try {
       const a = firebaseAuth();
@@ -87,7 +93,7 @@ export function LoginFormular() {
       return;
     }
     starte(async () => {
-      const antwort = await mitGoogleAnmelden(idToken, code);
+      const antwort = await mitGoogleAnmelden(idToken, code, avv);
       // Bei Erfolg leitet der Server direkt auf /coach weiter
       if (antwort) {
         setFehler(antwort.fehler);
@@ -150,9 +156,23 @@ export function LoginFormular() {
           autoCapitalize="characters"
           spellCheck={false}
           maxLength={20}
-          placeholder="z. B. ABCD-EFGH"
+          placeholder="z. B. ABCDE-FGHJK"
           className={`${eingabeKlassen} mt-2 h-12 font-mono tracking-wider`}
         />
+        <label className="mt-4 flex items-start gap-3 text-[14px] leading-relaxed text-text-zwei">
+          <input
+            type="checkbox"
+            checked={avv}
+            onChange={(e) => setAvv(e.target.checked)}
+            className="mt-1 size-5 shrink-0 accent-akzent"
+          />
+          <span>
+            Ich schließe den Vertrag zur Auftragsverarbeitung mit Frederik Schmidt ab.{" "}
+            <a href="/avv" target="_blank" rel="noopener" className="underline hover:text-text">
+              Vertrag lesen
+            </a>
+          </span>
+        </label>
         <p className="mt-2 text-[13px] leading-relaxed text-text-leise">
           Nur beim ersten Mal nötig. Danach reicht „Mit Google anmelden“.
         </p>

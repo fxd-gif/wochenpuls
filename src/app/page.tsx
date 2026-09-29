@@ -422,7 +422,7 @@ export default function Startseite() {
         </section>
       </main>
 
-      <footer className="border-t border-linie bg-abschnitt py-12">
+      <footer id="startfuss" className="border-t border-linie bg-abschnitt py-12">
         <div
           className={`${innen} flex flex-col items-center justify-between gap-6 px-5 text-[13px] text-text-leise sm:flex-row lg:px-8`}
         >
@@ -433,12 +433,15 @@ export default function Startseite() {
             </span>
             <span>Das ruhige Dashboard für Coaches mit ihren ersten Kunden.</span>
           </p>
-          <nav aria-label="Weitere Seiten" className="flex items-center gap-8 font-medium">
+          <nav aria-label="Weitere Seiten" className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 font-medium">
             <Link href="/demo" className="transition-colors hover:text-text">
               Demo
             </Link>
             <Link href="/login" className="transition-colors hover:text-text">
               Coach-Login
+            </Link>
+            <Link href="/datenschutz" className="transition-colors hover:text-text">
+              Datenschutz
             </Link>
           </nav>
         </div>

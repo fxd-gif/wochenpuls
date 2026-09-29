@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono, Newsreader } from "next/font/google";
+import Link from "next/link";
 import "./globals.css";
 
 const newsreader = Newsreader({
@@ -39,7 +40,18 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       data-scroll-behavior="smooth"
       className={`${newsreader.variable} ${inter.variable} ${jetbrains.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col">{children}</body>
+      {/* Die Startseite hat einen eigenen Fuß (id "startfuss"): Dann entfällt dieser schmale Fuß */}
+      <body className="flex min-h-full flex-col [&>#startfuss~footer]:hidden">
+        {children}
+        <footer className="border-t border-linie px-5 py-5 text-center text-[13px] text-text-leise">
+          <Link
+            href="/datenschutz"
+            className="inline-flex min-h-11 items-center px-3 transition-colors hover:text-text"
+          >
+            Datenschutz
+          </Link>
+        </footer>
+      </body>
     </html>
   );
 }

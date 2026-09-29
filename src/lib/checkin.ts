@@ -1,8 +1,21 @@
+import type { FokusFassung } from "./woche";
+
 // Alles, was ein Check-in enthält, und die Regeln fürs Ausfüllen.
 // Wird vom Formular (Browser) und später auch vom Server benutzt.
 
 export const MAX_TRAININGS = 14;
 export const MAX_TEXTLAENGE = 500;
+export const MAX_FOKUS = 120;
+
+// Antwort auf den Wochenfokus. "keine" setzt nur der Server (Kunde hat nicht passend geantwortet).
+export const FOKUS_ANTWORTEN = {
+  geschafft: "Geschafft",
+  teilweise: "Teilweise",
+  nicht: "Nicht geschafft",
+  keine: "keine Angabe",
+} as const;
+export type FokusAntwort = keyof typeof FOKUS_ANTWORTEN;
+export const wahlAntworten: FokusAntwort[] = ["geschafft", "teilweise", "nicht"];
 
 export type SkalaSchluessel = "energie" | "schlaf" | "stress" | "motivation";
 
@@ -19,13 +32,27 @@ export type CheckinEingabe = {
 };
 
 // Ein gespeicherter Check-in. "woche" ist der Sonntag, für den er zählt (JJJJ-MM-TT).
-export type Checkin = CheckinEingabe & { kundeId: string; woche: string; eingereichtAm: string };
+// Gilt für die Woche ein Fokus, steht hier eine Kopie seines Textes und die Antwort (fehlt sonst).
+export type Checkin = CheckinEingabe & {
+  kundeId: string;
+  woche: string;
+  eingereichtAm: string;
+  fokusText?: string;
+  fokusAntwort?: FokusAntwort;
+};
 
 export type Kunde = {
   id: string;
   name: string;
   angelegtAm: string; // JJJJ-MM-TT
   archiviert: boolean;
+  // Einwilligung des Kunden (ISO-Zeitpunkte). Fehlt in der Demo.
+  einwilligungFassung?: string;
+  einwilligungAm?: string;
+  widerrufenAm?: string;
+  // Wochenfokus (nur echte App): neueste Fassung und die davor. Fehlt in der Demo.
+  fokus?: FokusFassung | null;
+  fokusVorher?: FokusFassung | null;
 };
 
 // Während des Ausfüllens dürfen Zahlen noch leer sein.

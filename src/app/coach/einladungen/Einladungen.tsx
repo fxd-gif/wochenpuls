@@ -2,26 +2,30 @@
 
 import { Check, Copy, KeyRound, Trash2 } from "lucide-react";
 import { useActionState, useState } from "react";
+import { KontoLoeschen } from "@/components/coach/KontoLoeschen";
 import { Abschnittskopf } from "@/components/ui/Abschnittskopf";
 import { Button } from "@/components/ui/Button";
 import { eingabeKlassen, mikroKlassen, panelKlassen } from "@/components/ui/stil";
 import type { Einladung } from "@/lib/server/datenbank";
-import { datumKurz } from "@/lib/woche";
+import { datumKurz, datumMitJahr } from "@/lib/woche";
 
-// "ABCDEFGH" → "ABCD-EFGH", leichter vorzulesen und abzutippen
-const lesbar = (code: string) => `${code.slice(0, 4)}-${code.slice(4)}`;
+// "ABCDEFGHJK" → "ABCDE-FGHJK", leichter vorzulesen und abzutippen
+const lesbar = (code: string) => `${code.slice(0, 5)}-${code.slice(5)}`;
 
 export function Einladungen({
   liste,
   erzeugen,
   loeschen,
+  kontoLoeschen,
 }: {
   liste: Einladung[];
   erzeugen: (vorher: string | null, daten: FormData) => Promise<string | null>;
   loeschen: (daten: FormData) => Promise<void>;
+  kontoLoeschen: (vorher: string | null, daten: FormData) => Promise<string | null>;
 }) {
   const [fehler, aktion, laeuft] = useActionState(erzeugen, null);
   const [kopiert, setKopiert] = useState<string | null>(null);
+  const [frage, setFrage] = useState<string | null>(null); // Code, bei dem die Löschen-Rückfrage offen ist
 
   async function kopieren(code: string) {
     try {
@@ -81,8 +85,12 @@ export function Einladungen({
               <div className="min-w-0">
                 <p className="font-mono text-[16px] tracking-wider text-text">{lesbar(e.code)}</p>
                 <p className="mt-0.5 text-[13px] text-text-zwei">
-                  {e.vermerk} · erstellt {datumKurz(e.erstelltAm)} ·{" "}
-                  {e.eingeloestAm ? `eingelöst ${datumKurz(e.eingeloestAm)}` : "offen"}
+                  {e.kontoGeloescht ? "" : `${e.vermerk} · `}erstellt {datumKurz(e.erstelltAm)} ·{" "}
+                  {e.kontoGeloescht
+                    ? `Konto gelöscht (eingelöst ${datumKurz(e.eingeloestAm!)})`
+                    : e.eingeloestAm
+                      ? `eingelöst ${datumKurz(e.eingeloestAm)}`
+                      : "offen"}
                 </p>
               </div>
               {!e.eingeloestAm && (
@@ -95,18 +103,46 @@ export function Einladungen({
                     )}
                     {kopiert === e.code ? "Kopiert" : "Kopieren"}
                   </Button>
-                  <form action={loeschen}>
-                    <input type="hidden" name="code" value={e.code} />
-                    <Button
-                      type="submit"
-                      variante="ghost"
-                      groesse="klein"
-                      aria-label={`Code ${lesbar(e.code)} löschen`}
-                    >
-                      <Trash2 size={15} strokeWidth={1.75} aria-hidden="true" />
-                    </Button>
-                  </form>
+                  <Button
+                    type="button"
+                    variante="ghost"
+                    groesse="klein"
+                    disabled={frage === e.code}
+                    aria-label={`Code ${lesbar(e.code)} löschen`}
+                    onClick={() => setFrage(e.code)}
+                  >
+                    <Trash2 size={15} strokeWidth={1.75} aria-hidden="true" />
+                  </Button>
                 </div>
+              )}
+              {frage === e.code && (
+                <div
+                  role="alert"
+                  className="flex w-full flex-wrap items-center gap-3 rounded-subtil border border-ampel-rot/30 bg-ampel-rot/10 p-3"
+                >
+                  <p className="flex-1 basis-64 text-[13px] font-medium text-ampel-rot">
+                    Code {lesbar(e.code)} endgültig löschen?
+                  </p>
+                  <div className="flex gap-2">
+                    <form action={loeschen}>
+                      <input type="hidden" name="code" value={e.code} />
+                      <Button type="submit" variante="gefahr" groesse="klein">
+                        Endgültig löschen
+                      </Button>
+                    </form>
+                    <Button type="button" variante="sekundaer" groesse="klein" autoFocus onClick={() => setFrage(null)}>
+                      Abbrechen
+                    </Button>
+                  </div>
+                </div>
+              )}
+              {e.eingeloestAm && !e.kontoGeloescht && (
+                <KontoLoeschen
+                  aktion={kontoLoeschen}
+                  code={e.code}
+                  knopf="Coach-Konto löschen"
+                  frage={`Coach-Konto „${e.vermerk}“ (eingelöst am ${datumMitJahr(e.eingeloestAm)}) endgültig löschen? Alle Kunden, Check-ins, Notizen und Einwilligungen dieses Coaches gehen für immer verloren.`}
+                />
               )}
             </li>
           ))}

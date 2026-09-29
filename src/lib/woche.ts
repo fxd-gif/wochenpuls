@@ -74,3 +74,50 @@ const kurzFormat = new Intl.DateTimeFormat("de-DE", {
 export function datumKurz(datum: string): string {
   return kurzFormat.format(alsTag(datum));
 }
+
+// "29.09.2026" aus einem ISO-Zeitpunkt, in deutscher Zeit
+export function datumMitJahr(zeitpunkt: string): string {
+  return berlinDatum(new Date(zeitpunkt)).split("-").reverse().join(".");
+}
+
+// "29.09.2026 14:05" aus einem ISO-Zeitpunkt, in deutscher Zeit
+export function datumMitUhrzeit(zeitpunkt: string): string {
+  const zeit = new Intl.DateTimeFormat("de-DE", {
+    timeZone: "Europe/Berlin",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  }).format(new Date(zeitpunkt));
+  return `${datumMitJahr(zeitpunkt)} ${zeit}`;
+}
+
+// ---------- Wochenfokus ----------
+
+// Eine Fassung des Wochenfokus. Leerer Text = Fokus geleert. "gesetztAm" ist ein Berlin-Datum.
+export type FokusFassung = { text: string; gesetztAm: string; id: string };
+
+// Ab welcher Check-in-Woche gilt eine am Tag "gesetztAm" gesetzte Fassung? Ab der Woche nach der Woche, in der sie gesetzt wurde.
+export function fokusGiltAb(gesetztAm: string): string {
+  return plusTage(checkinWoche(gesetztAm), 7);
+}
+
+// Welcher Fokus gilt für eine Check-in-Woche? "fassungen": neueste zuerst. Es gilt die neueste Fassung, die in
+// dieser Woche schon gilt. Null, wenn keine gilt oder die geltende leer ist (Fokus geleert).
+export function geltenderFokus(
+  fassungen: (FokusFassung | null | undefined)[],
+  woche: string,
+): FokusFassung | null {
+  const treffer = fassungen.find((f) => f && fokusGiltAb(f.gesetztAm) <= woche);
+  return treffer && treffer.text ? treffer : null;
+}
+
+// Neue Fassung setzen. Die bisherige neueste wird nur dann zu "vorher", wenn sie in der laufenden Woche schon gilt;
+// sonst bleibt die davor stehen (sie gilt in dieser Woche noch). Mehr als diese zwei Fassungen braucht es nie.
+export function setzeFokus(
+  aktuell: { fokus?: FokusFassung | null; fokusVorher?: FokusFassung | null },
+  neu: FokusFassung,
+): { fokus: FokusFassung; fokusVorher: FokusFassung | null } {
+  const woche = checkinWoche(neu.gesetztAm);
+  const gilt = aktuell.fokus && fokusGiltAb(aktuell.fokus.gesetztAm) <= woche;
+  return { fokus: neu, fokusVorher: (gilt ? aktuell.fokus : aktuell.fokusVorher) ?? null };
+}

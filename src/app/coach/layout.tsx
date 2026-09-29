@@ -1,12 +1,14 @@
-import { LogOut } from "lucide-react";
+import { LogOut, User } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { abmelden } from "@/app/login/aktionen";
+import { AvvHinweis } from "@/components/coach/AvvHinweis";
 import { CoachKopf } from "@/components/coach/CoachKopf";
 import { NavLink } from "@/components/coach/NavLink";
 import { Hinweisseite } from "@/components/ui/Hinweisseite";
-import { anmeldungPruefen } from "@/lib/server/anmeldung";
+import { anmeldungPruefen, avvZustimmungOffen } from "@/lib/server/anmeldung";
 import { datenbankEingerichtet } from "@/lib/server/datenbank";
+import { avvZustimmen } from "./aktionen";
 
 export const metadata: Metadata = {
   title: "Coach · Wochenpuls",
@@ -24,6 +26,10 @@ export default async function CoachRahmen({ children }: LayoutProps<"/coach">) {
         extra={
           <>
             {coach.istAdmin && <NavLink href="/coach/einladungen">Codes</NavLink>}
+            <NavLink href="/coach/konto">
+              <User size={15} strokeWidth={1.75} aria-hidden="true" className="sm:hidden" />
+              <span className="sr-only sm:not-sr-only">Konto</span>
+            </NavLink>
             <form action={abmelden}>
               <button
                 type="submit"
@@ -37,6 +43,7 @@ export default async function CoachRahmen({ children }: LayoutProps<"/coach">) {
           </>
         }
       />
+      {avvZustimmungOffen(coach) && <AvvHinweis zustimmen={avvZustimmen} />}
       {datenbankEingerichtet() ? (
         <main className="flex-1">{children}</main>
       ) : (

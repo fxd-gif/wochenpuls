@@ -8,7 +8,7 @@ export function CoachKopf({ basis, etikett, extra }: { basis: string; etikett: s
     <header className="sticky top-0 z-40 border-b border-linie bg-leinwand/90 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-5 lg:px-8">
         <div className="flex items-center gap-3">
-          <Logo href={basis} />
+          <Logo href={basis} kompakt={basis === "/coach"} />
           <span className="hidden text-xs text-text-leise sm:inline">/</span>
           <span className="hidden sm:inline">
             <Etikett>{etikett}</Etikett>

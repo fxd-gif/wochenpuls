@@ -10,11 +10,20 @@ export const metadata: Metadata = {
   robots: { index: false },
 };
 
-export default async function LoginSeite() {
+export default async function LoginSeite({ searchParams }: PageProps<"/login">) {
   if (await istAngemeldet()) redirect("/coach");
+  const geloescht = (await searchParams).konto === "geloescht";
 
   return (
     <Hinweisseite kicker="Coach-Bereich" titel="Anmelden">
+      {geloescht && (
+        <p
+          role="status"
+          className="mt-3 rounded-subtil border border-linie-fokus bg-abschnitt p-4 text-[14px] text-text"
+        >
+          Dein Konto wurde gelöscht, samt aller Kunden und Check-ins.
+        </p>
+      )}
       {anmeldungEingerichtet() ? (
         <>
           <p className="mt-3 text-[15px] leading-relaxed text-text-zwei">
@@ -26,6 +35,13 @@ export default async function LoginSeite() {
             >
               LinkedIn
             </a>
+            .
+          </p>
+          <p className="mt-3 text-[15px] leading-relaxed text-text-zwei">
+            Hinweise zur Verarbeitung deiner Daten findest du in der{" "}
+            <Link href="/datenschutz" className="text-akzent underline underline-offset-4">
+              Datenschutzerklärung
+            </Link>
             .
           </p>
           <LoginFormular />

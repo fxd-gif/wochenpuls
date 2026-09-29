@@ -3,7 +3,7 @@ import Link from "next/link";
 import { AmpelMarke, ampelStufen } from "@/components/AmpelMarke";
 import type { AmpelErgebnis } from "@/lib/ampel";
 import type { Kunde } from "@/lib/checkin";
-import { datumKurz } from "@/lib/woche";
+import { datumKurz, datumMitJahr } from "@/lib/woche";
 
 const kurzNamen = [
   ["energie", "Energie"],
@@ -113,6 +113,25 @@ export function KundenKarte({
           <ArrowRight size={15} strokeWidth={2} aria-hidden="true" />
         </span>
       </div>
+    </Link>
+  );
+}
+
+// Kunde, der seine Einwilligung widerrufen hat: keine Ampel, kein Grund, nur der Vermerk
+export function WiderrufKarte({ kunde, href }: { kunde: Kunde; href: string }) {
+  return (
+    <Link
+      href={href}
+      className="group flex h-full flex-col rounded-panel border border-linie bg-flaeche p-6 transition-colors hover:border-linie-fokus hover:bg-flaeche-hoch sm:p-7"
+    >
+      <h2 className="font-serif text-[28px] font-normal leading-tight">{kunde.name}</h2>
+      <p className="mt-4 rounded-subtil border border-linie bg-flaeche-alt p-3.5 text-[14px] font-medium leading-snug text-text-zwei">
+        Einwilligung widerrufen am {datumMitJahr(kunde.widerrufenAm!)}
+      </p>
+      <span className="mt-auto inline-flex items-center gap-1 pt-6 text-[13px] font-medium text-text-zwei transition-colors group-hover:text-text">
+        Details
+        <ArrowRight size={15} strokeWidth={2} aria-hidden="true" />
+      </span>
     </Link>
   );
 }
