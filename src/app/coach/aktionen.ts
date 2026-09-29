@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { AVV_GEAENDERT, anmeldungPruefen, avvZustimmungOffen } from "@/lib/server/anmeldung";
-import { legeKundeAn, loescheKunde, MAX_KUNDEN, setzeArchiviert, speichereAvvZustimmung } from "@/lib/server/datenbank";
+import { legeKundeAn, loescheKunde, MAX_KUNDEN, setzeArchiviert, speichereAvvZustimmung, speichereOnboardingFertig } from "@/lib/server/datenbank";
 import { berlinDatum } from "@/lib/woche";
 import { erneuereToken, speichereFokus, speichereNotiz } from "@/lib/server/datenbank";
 import { MAX_FOKUS } from "@/lib/checkin";
@@ -89,5 +89,16 @@ export async function notizSpeichern(_vorher: NotizZustand, daten: FormData): Pr
   } catch (fehler) {
     console.error("Notiz speichern fehlgeschlagen:", fehler);
     return { fehler: "Das Speichern hat nicht geklappt. Bitte versuch es noch einmal." };
+  }
+}
+
+// Die Einführung ist durchgeklickt oder übersprungen. Schlägt das Speichern fehl, geht es trotzdem weiter:
+// Die Einführung erscheint dann beim nächsten Login noch einmal.
+export async function onboardingAbschliessen(): Promise<void> {
+  const coach = await anmeldungPruefen();
+  try {
+    await speichereOnboardingFertig(coach.uid);
+  } catch {
+    // bewusst still
   }
 }

@@ -252,6 +252,16 @@ export async function coachDaten(uid: string): Promise<CoachDaten | null> {
   return { avvFassung: d.data()!.avvFassung, avvAm: d.data()!.avvAm };
 }
 
+// Hat der Coach die Einführung schon durchgeklickt (oder übersprungen)? Neue Konten haben das Feld nicht.
+export async function onboardingErledigt(uid: string): Promise<boolean> {
+  return Boolean((await coaches().doc(uid).get()).data()?.onboardingFertig);
+}
+
+// Merkt sich die erledigte Einführung. update statt set: Fehlt der Eintrag (Löschung), wird er nicht neu angelegt.
+export async function speichereOnboardingFertig(uid: string): Promise<void> {
+  await coaches().doc(uid).update({ onboardingFertig: new Date().toISOString() });
+}
+
 // Wurde eine Kontolöschung begonnen, aber nicht beendet?
 export async function loeschungOffen(uid: string): Promise<boolean> {
   return Boolean((await coaches().doc(uid).get()).data()?.geloeschtAm);

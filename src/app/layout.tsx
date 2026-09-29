@@ -43,12 +43,18 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       {/* Die Startseite hat einen eigenen Fuß (id "startfuss"): Dann entfällt dieser schmale Fuß */}
       <body className="flex min-h-full flex-col [&>#startfuss~footer]:hidden">
         {children}
-        <footer className="border-t border-linie px-5 py-5 text-center text-[13px] text-text-leise">
+        <footer className="flex flex-wrap items-center justify-center border-t border-linie px-5 py-5 text-[13px] text-text-leise">
           <Link
             href="/datenschutz"
             className="inline-flex min-h-11 items-center px-3 transition-colors hover:text-text"
           >
             Datenschutz
+          </Link>
+          <Link
+            href="/avv"
+            className="inline-flex min-h-11 items-center px-3 transition-colors hover:text-text"
+          >
+            Vertrag zur Auftragsverarbeitung
           </Link>
         </footer>
       </body>

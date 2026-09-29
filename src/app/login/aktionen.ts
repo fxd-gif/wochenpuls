@@ -15,6 +15,7 @@ import {
   loescheCoachKonto,
   loeschungOffen,
   loeseEinladungEin,
+  onboardingErledigt,
 } from "@/lib/server/datenbank";
 import { berlinDatum } from "@/lib/woche";
 
@@ -55,6 +56,7 @@ export async function mitGoogleAnmelden(
   }
   const email = konto.email ?? "";
   const heute = berlinDatum();
+  let ziel = "/coach";
 
   try {
     // Eine abgebrochene Kontolöschung wird hier zu Ende geführt, statt das Konto wieder zu öffnen.
@@ -93,10 +95,16 @@ export async function mitGoogleAnmelden(
     }
 
     await sitzungStarten(idToken);
+    // Solange die Einführung nicht erledigt ist, führt die Anmeldung dorthin. Lässt sich das nicht lesen: normal weiter.
+    try {
+      if (!(await onboardingErledigt(konto.uid))) ziel = "/coach/willkommen";
+    } catch {
+      // ziel bleibt /coach
+    }
   } catch {
     return { fehler: NICHT_MOEGLICH };
   }
-  redirect("/coach"); // bewusst außerhalb von try: redirect wirft intern eine Ausnahme
+  redirect(ziel); // bewusst außerhalb von try: redirect wirft intern eine Ausnahme
 }
 
 export async function abmelden(): Promise<void> {

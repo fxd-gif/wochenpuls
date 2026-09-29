@@ -187,3 +187,69 @@ input[type="range"]::-moz-range-thumb {
   border: 2px solid var(--color-akzent);
   cursor: pointer;
 }
+
+/*
+  Einführung: alle Schritte liegen übereinander in einer Zelle (die Höhe ist damit immer die des höchsten Schritts,
+  nichts springt). Der aktive Schritt blendet ein und gleitet aus der Laufrichtung herein, die anderen blenden aus.
+  --aus ist -1 für Schritte vor dem aktiven, 1 für Schritte danach. Überschrift, Text und Bild kommen leicht versetzt.
+  Bei "Bewegung reduzieren" bleibt nur ein kurzes Überblenden.
+*/
+.tour-schritt {
+  grid-area: 1 / 1;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(calc(var(--aus, 1) * 14px));
+  transition:
+    opacity 0.2s ease-out,
+    transform 0.2s ease-out,
+    visibility 0s 0.2s;
+}
+.tour-schritt[data-aktiv] {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition:
+    opacity 0.35s ease-out,
+    transform 0.35s ease-out,
+    visibility 0s;
+}
+.tour-teil {
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 0.2s ease-out,
+    transform 0.2s ease-out;
+}
+[data-aktiv] .tour-teil {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.35s ease-out calc(var(--i, 0) * 70ms),
+    transform 0.35s ease-out calc(var(--i, 0) * 70ms);
+}
+/* Seite blendet beim Laden ein und beim Abschluss aus */
+.tour-huelle {
+  animation: tour-ein 0.5s ease-out both;
+  transition: opacity 0.25s ease-out;
+}
+.tour-huelle[data-geht] {
+  opacity: 0;
+}
+@keyframes tour-ein {
+  from {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tour-schritt,
+  .tour-schritt[data-aktiv] {
+    transform: none;
+    transition-duration: 0.15s, 0.15s, 0s;
+  }
+  .tour-teil,
+  [data-aktiv] .tour-teil {
+    transform: none;
+    transition-duration: 0.15s;
+    transition-delay: 0s;
+  }
+}

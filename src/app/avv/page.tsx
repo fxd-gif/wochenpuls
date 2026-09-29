@@ -419,17 +419,29 @@ export default function AvvSeite() {
               Coaches werden behandelt, als gäbe es sie nicht.
             </li>
             <li>
-              Anmeldung: Google-Anmeldung, Sitzungs-Cookie (httpOnly, in Produktion nur über HTTPS, 14 Tage).
-              Ein Coach-Konto kann gesperrt werden; die Sitzung endet dann sofort.
+              Anmeldung: Google-Anmeldung, Sitzungs-Cookie (httpOnly, SameSite=Lax, in Produktion nur über HTTPS, 14 Tage), beim Abmelden
+              serverseitig widerrufen. Anmeldung nur über Google, es gelten die Sicherheitsfunktionen des
+              Google-Kontos (z. B. Zwei-Faktor-Anmeldung, falls eingerichtet). Ein Coach-Konto kann gesperrt werden; die Sitzung endet dann sofort.
             </li>
             <li>
               Kunden-Links: 32 zufällige Zeichen, praktisch nicht zu erraten; archivierte Kunden sind
               gesperrt; die Check-in-Seite gibt keine Herkunft weiter und ist für Suchmaschinen gesperrt.
             </li>
-            <li>Verschlüsselte Übertragung (HTTPS) und Speicherung bei den Unterauftragnehmern.</li>
+            <li>
+              Verschlüsselte Übertragung (HTTPS). Die Speicherung bei Google Cloud ist nach Angaben von Google
+              verschlüsselt.
+            </li>
+            <li>
+              Jede Aktion im Coach-Bereich prüft Anmeldung und Besitz; Aktionen der Kunden prüfen den
+              persönlichen Link.
+            </li>
             <li>Kein Tracking, keine Analyse, keine Werbung, keine extern geladenen Schriften.</li>
             <li>Löschung: Kunden werden samt Check-ins und Notiz vollständig gelöscht, ebenso ein ganzes Coach-Konto.</li>
-            <li>Zugriff auf Kundendaten nur zur Fehlerbehebung, für Löschungen und bei Missbrauch.</li>
+            <li>
+              Zugriff auf Kundendaten nur zur Fehlerbehebung, für Löschungen und bei Missbrauch. Keine Nutzung
+              für eigene Zwecke, keine Auswertung, keine Weitergabe.
+            </li>
+            <li>Keine eigenen Sicherungskopien (Backups) von Wochenpuls.</li>
           </Liste>
         </Paragraf>
 

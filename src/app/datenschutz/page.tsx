@@ -13,6 +13,57 @@ export const metadata: Metadata = {
 const stand = RECHTSTEXTE_STAND.split("-").reverse().join(".");
 const linkKlassen = "text-akzent underline underline-offset-4 break-words";
 
+// Zuständige Aufsichtsbehörde des Betreibers: die einzige Stelle, an der sie steht.
+const AUFSICHTSBEHOERDE = {
+  name: "Landesbeauftragte für den Datenschutz und die Informationsfreiheit Baden-Württemberg",
+  adresse: "Heilbronner Straße 35, 70191 Stuttgart",
+  url: "https://www.baden-wuerttemberg.datenschutz.de",
+};
+
+const RECHTSGRUNDLAGEN: { was: string; zweck: string; grundlage: string }[] = [
+  {
+    was: "Besuch der Website (Hosting-Protokolle)",
+    zweck: "Sicherer und stabiler Betrieb",
+    grundlage: "Art. 6 Abs. 1 lit. f DSGVO",
+  },
+  {
+    was: "Coach-Konto und Anmeldung",
+    zweck: "Nutzung von Wochenpuls durch den Coach",
+    grundlage: "Art. 6 Abs. 1 lit. b DSGVO",
+  },
+  {
+    was: "Einladungscodes",
+    zweck: "Zugang zur Registrierung, Zuordnung zum Konto für Löschung und Missbrauchsabwehr",
+    grundlage: "Art. 6 Abs. 1 lit. b bzw. lit. f DSGVO",
+  },
+  {
+    was: "Sitzungs-Cookie des Coaches",
+    zweck: "Angemeldet bleiben",
+    grundlage: "§ 25 Abs. 2 Nr. 2 TDDDG (technisch notwendig)",
+  },
+  {
+    was: "Check-ins der Kunden, auch die Einschätzungen zu Energie, Schlaf, Stress und Motivation",
+    zweck: "Wöchentlicher Austausch zwischen Kunde und Coach",
+    grundlage:
+      "Einwilligung, Art. 6 Abs. 1 lit. a und Art. 9 Abs. 2 lit. a DSGVO. Verantwortlich ist der Coach, der Betreiber verarbeitet im Auftrag.",
+  },
+  {
+    was: "Notizen und Wochenfokus",
+    zweck: "Arbeit des Coaches mit seinen Kunden",
+    grundlage: "Im Auftrag des Coaches, der dafür verantwortlich ist",
+  },
+  {
+    was: "Speicherung von Einwilligung und Zustimmung zum Vertrag zur Auftragsverarbeitung",
+    zweck: "Nachweis",
+    grundlage: "Art. 6 Abs. 1 lit. c i. V. m. Art. 7 Abs. 1 DSGVO",
+  },
+  {
+    was: "E-Mail-Anfragen an den Betreiber",
+    zweck: "Anfragen beantworten",
+    grundlage: "Art. 6 Abs. 1 lit. b bzw. lit. f DSGVO",
+  },
+];
+
 function Abschnitt({ titel, children }: { titel: string; children: ReactNode }) {
   return (
     <section className="mt-10">
@@ -90,6 +141,22 @@ export default function DatenschutzSeite() {
           <p>Es gibt kein Tracking, keine Analyse und keine Werbung.</p>
         </Abschnitt>
 
+        <Abschnitt titel="Wozu und auf welcher Grundlage?">
+          <ul className="space-y-3">
+            {RECHTSGRUNDLAGEN.map((z) => (
+              <li key={z.was} className="rounded-subtil border border-linie bg-flaeche p-4">
+                <p className="font-semibold text-text">{z.was}</p>
+                <p className="mt-1">
+                  <span className="text-text-leise">Zweck:</span> {z.zweck}
+                </p>
+                <p>
+                  <span className="text-text-leise">Rechtsgrundlage:</span> {z.grundlage}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </Abschnitt>
+
         <Abschnitt titel="Hosting (Vercel)">
           <p>
             Die Website läuft bei Vercel Inc. (USA) in der Serverregion Frankfurt (fra1). Wenn du eine Seite
@@ -122,8 +189,11 @@ export default function DatenschutzSeite() {
             mit dem Coach (Art. 6 Abs. 1 lit. b DSGVO).
           </p>
           <p>
-            Die Übermittlung in die USA stützt sich auf die Garantien, die Google und Vercel nach ihren
-            Vertragsbedingungen bieten (EU-Standardvertragsklauseln bzw. das EU-US Data Privacy Framework).
+            <strong className="font-semibold text-text">USA:</strong> Google (Firebase Authentication)
+            verarbeitet die Kontodaten der Coaches auch in den USA. Grundlage sind die
+            Datenverarbeitungsbedingungen von Google mit EU-Standardvertragsklauseln; außerdem ist Google LLC
+            nach dem EU-US Data Privacy Framework zertifiziert. Die Daten der Kunden liegen in Frankfurt.
+            Für Vercel gelten die oben genannten Angaben, die Vercel nach seinen Vertragsbedingungen bietet.
           </p>
           <p>
             <strong className="font-semibold text-text">Wann Google ins Spiel kommt:</strong> Erst der Klick
@@ -133,7 +203,7 @@ export default function DatenschutzSeite() {
           </p>
           <p>
             Meldet sich jemand ohne gültigen Einladungscode an, löscht Wochenpuls den dabei neu entstandenen
-            Firebase-Nutzer, sobald die Anmeldung beim Server ankommt. Bricht der Vorgang vorher ab, etwa weil
+            Firebase-Nutzer sofort, sobald die Anmeldung beim Server ankommt. Bricht der Vorgang vorher ab, etwa weil
             der Tab geschlossen wird, kann der Nutzer bestehen bleiben, bis der Betreiber ihn entfernt.
           </p>
         </Abschnitt>
@@ -247,6 +317,10 @@ export default function DatenschutzSeite() {
         <Abschnitt titel="Speicherdauer und Löschung">
           <Liste>
             <li>
+              Check-ins der Kunden bleiben gespeichert, bis der Coach oder der Kunde sie löscht: durch Löschen
+              des Kunden, durch Widerruf der Einwilligung oder durch Löschen des Coach-Kontos.
+            </li>
+            <li>
               Der Coach kann jeden Kunden mit allen Check-ins und der Notiz selbst löschen; das ist endgültig.
             </li>
             <li>
@@ -259,15 +333,32 @@ export default function DatenschutzSeite() {
               Ein eingelöster Einladungscode bleibt nur als „Konto gelöscht“ übrig, ohne Vermerk und ohne
               Zuordnung.
             </li>
-            <li>Das Cookie läuft nach 14 Tagen ab.</li>
+            <li>Das Sitzungs-Cookie gilt 14 Tage oder bis zum Abmelden.</li>
+            <li>Abgewiesene Google-Konten ohne gültigen Einladungscode werden sofort entfernt.</li>
           </Liste>
+          <p>
+            Löschungen in der App wirken sofort in der Datenbank. Wochenpuls legt selbst keine
+            Sicherungskopien (Backups) an: Im Projekt gibt es kein Sicherungsskript und keine Exportfunktion
+            außer der CSV-Tabelle, die der Coach für einen Kunden anfordern kann. Interne Kopien bei Google
+            oder Vercel werden nach deren Bedingungen gelöscht.
+          </p>
         </Abschnitt>
 
         <Abschnitt titel="Deine Rechte">
           <p>
             Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung,
             Widerspruch und Datenübertragbarkeit sowie auf Widerruf einer Einwilligung. Du kannst dich bei
-            einer Datenschutz-Aufsichtsbehörde beschweren.
+            einer Datenschutz-Aufsichtsbehörde beschweren, insbesondere in dem Bundesland, in dem du wohnst
+            oder arbeitest. Für den Betreiber zuständig ist der {AUFSICHTSBEHOERDE.name},{" "}
+            {AUFSICHTSBEHOERDE.adresse},{" "}
+            <a href={AUFSICHTSBEHOERDE.url} target="_blank" rel="noopener noreferrer" className={linkKlassen}>
+              {AUFSICHTSBEHOERDE.url.replace("https://", "")}
+            </a>
+            .
+          </p>
+          <p>
+            Anfragen zu deinen Rechten beantwortet der Betreiber innerhalb eines Monats (Art. 12 Abs. 3
+            DSGVO).
           </p>
           <p>
             <strong className="font-semibold text-text">Coaches</strong> wenden sich dafür an <Mail /> oder
@@ -283,12 +374,41 @@ export default function DatenschutzSeite() {
           <p>
             Als Betreiber kann {BETREIBER} über die Firebase-Konsole technisch alle gespeicherten Daten
             einsehen, auch Notizen und Wochenfokus. Er nutzt diesen Zugriff nur zur Fehlerbehebung, für
-            Löschungen auf Anfrage und bei Missbrauch, nicht zum Lesen von Kundendaten.
+            Löschungen auf Anfrage und bei Missbrauch, nicht zum Lesen von Kundendaten. Er nutzt die Daten
+            nicht für eigene Zwecke, wertet sie nicht aus und gibt sie nicht weiter.
           </p>
           <p>
             Dienstleister, die Daten verarbeiten: Google (Firebase Authentication, Cloud Firestore) und Vercel
             (Hosting).
           </p>
+        </Abschnitt>
+
+        <Abschnitt titel="Schutz der Daten">
+          <Liste>
+            <li>Die Übertragung ist verschlüsselt (HTTPS, über Vercel).</li>
+            <li>
+              Die Datenbank ist vom Browser aus gesperrt (Regeln „alles zu“). Nur der Server greift zu.
+            </li>
+            <li>
+              Jede Aktion im Coach-Bereich prüft Anmeldung und Besitz; Aktionen der Kunden prüfen den
+              persönlichen Link.
+            </li>
+            <li>
+              Das Sitzungs-Cookie ist httpOnly, secure und SameSite=Lax. Beim Abmelden wird die Sitzung
+              serverseitig widerrufen.
+            </li>
+            <li>
+              Kunden-Links haben 32 Zufallszeichen. Die Check-in-Seite ist für Suchmaschinen gesperrt.
+            </li>
+            <li>
+              Die Anmeldung läuft nur über Google. Damit gelten die Sicherheitsfunktionen des Google-Kontos,
+              etwa die Zwei-Faktor-Anmeldung, falls der Coach sie eingerichtet hat.
+            </li>
+            <li>
+              Die Speicherung bei Google Cloud in Frankfurt ist nach Angaben von Google verschlüsselt.
+            </li>
+            <li>Es gibt keine Tracking- oder Werbedienste.</li>
+          </Liste>
         </Abschnitt>
 
         <section id="auftragsverarbeitung" className="mt-10 scroll-mt-6">

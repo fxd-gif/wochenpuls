@@ -440,8 +440,11 @@ export default function Startseite() {
             <Link href="/login" className="transition-colors hover:text-text">
               Coach-Login
             </Link>
-            <Link href="/datenschutz" className="transition-colors hover:text-text">
+            <Link href="/datenschutz" className="inline-flex min-h-11 items-center transition-colors hover:text-text">
               Datenschutz
+            </Link>
+            <Link href="/avv" className="inline-flex min-h-11 items-center transition-colors hover:text-text">
+              Vertrag zur Auftragsverarbeitung
             </Link>
           </nav>
         </div>

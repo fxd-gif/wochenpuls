@@ -34,6 +34,18 @@ export default async function KontoSeite() {
       </section>
 
       <section className={`${panelKlassen} mt-6`}>
+        <h2 className={mikroKlassen}>Einführung</h2>
+        <p className="mt-2 text-[14px] text-text-zwei">
+          <Link
+            href="/coach/willkommen"
+            className="-my-3 inline-flex min-h-11 items-center text-akzent underline underline-offset-4"
+          >
+            Einführung noch einmal ansehen
+          </Link>
+        </p>
+      </section>
+
+      <section className={`${panelKlassen} mt-6`}>
         <h2 className={mikroKlassen}>Konto löschen</h2>
         <p className="mt-2 mb-4 text-[14px] text-text-zwei">
           Löscht dein Konto, alle deine Kunden (aktuell {kunden}) mit ihren Check-ins, Notizen und Einwilligungen
