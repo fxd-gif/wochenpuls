@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Etikett, Logo } from "@/components/Logo";
+import { ModusSchalter } from "@/components/ModusSchalter";
 import { NavLink } from "./NavLink";
 
 // Kopfzeile aller Coach-Seiten (Demo und echt). "basis" ist "/demo" oder "/coach".
@@ -20,6 +21,7 @@ export function CoachKopf({ basis, etikett, extra }: { basis: string; etikett: s
           </NavLink>
           <NavLink href={`${basis}/kunden`}>Kunden</NavLink>
           {extra}
+          <ModusSchalter />
         </nav>
       </div>
     </header>

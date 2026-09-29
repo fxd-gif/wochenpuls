@@ -4,6 +4,7 @@ import type { CSSProperties } from "react";
 import { AmpelMarke, ampelStufen, type AmpelStufe } from "@/components/AmpelMarke";
 import { KundenKarte } from "@/components/coach/KundenKarte";
 import { Etikett, Logo } from "@/components/Logo";
+import { ModusSchalter } from "@/components/ModusSchalter";
 import { Simulator } from "@/components/start/Simulator";
 import { Abschnittskopf } from "@/components/ui/Abschnittskopf";
 import { ButtonLink } from "@/components/ui/Button";
@@ -94,7 +95,8 @@ export default function Startseite() {
               </a>
             ))}
           </nav>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <ModusSchalter />
             <span className="hidden items-center gap-2 rounded-full border border-linie-fokus bg-flaeche px-2.5 py-1 font-mono text-[11px] text-text-zwei lg:flex">
               <span aria-hidden="true" className="size-1.5 rounded-full bg-akzent" />
               Demo online
@@ -150,10 +152,10 @@ export default function Startseite() {
                     <span className="flex size-6 items-center justify-center rounded-full border border-leinwand bg-flaeche-alt font-mono text-[10px] text-text">
                       Le
                     </span>
-                    <span className="flex size-6 items-center justify-center rounded-full border border-leinwand bg-[#2A2318] font-mono text-[10px] text-ampel-gelb">
+                    <span className="flex size-6 items-center justify-center rounded-full border border-leinwand bg-ampel-gelb/15 font-mono text-[10px] text-ampel-gelb">
                       Mi
                     </span>
-                    <span className="flex size-6 items-center justify-center rounded-full border border-leinwand bg-[#17261E] font-mono text-[10px] text-ampel-gruen">
+                    <span className="flex size-6 items-center justify-center rounded-full border border-leinwand bg-ampel-gruen/15 font-mono text-[10px] text-ampel-gruen">
                       Ay
                     </span>
                   </div>
@@ -168,8 +170,8 @@ export default function Startseite() {
 
             {/* Produktfenster */}
             <div className="schweben relative lg:col-span-5">
-              <div className="halo overflow-hidden rounded-panel border border-linie-fokus bg-[#141815]">
-                <div className="flex items-center justify-between border-b border-linie bg-[#181D1A] px-4 py-3">
+              <div className="halo overflow-hidden rounded-panel border border-linie-fokus bg-flaeche">
+                <div className="flex items-center justify-between border-b border-linie bg-flaeche-hoch px-4 py-3">
                   <div className="flex items-center gap-2">
                     <span aria-hidden="true" className="size-2.5 rounded-full bg-ampel-rot/80" />
                     <span aria-hidden="true" className="size-2.5 rounded-full bg-ampel-gelb/80" />
@@ -309,7 +311,7 @@ export default function Startseite() {
                   <li
                     key={titel}
                     style={reihe(i)}
-                    className="einblenden group relative z-10 flex flex-col justify-between rounded-panel border border-linie-fokus bg-[#151916] p-7 transition-colors hover:border-akzent/40"
+                    className="einblenden group relative z-10 flex flex-col justify-between rounded-panel border border-linie-fokus bg-flaeche p-7 transition-colors hover:border-akzent/40"
                   >
                     <div>
                       <div className="mb-6 flex items-center justify-between">

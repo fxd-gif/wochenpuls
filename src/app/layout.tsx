@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono, Newsreader } from "next/font/google";
 import Link from "next/link";
+import { ModusSchalter, modusSkript } from "@/components/ModusSchalter";
 import "./globals.css";
 
 const newsreader = Newsreader({
@@ -38,8 +39,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="de"
       data-scroll-behavior="smooth"
+      // Das Skript im <head> setzt data-theme vor React; das ist gewollt
+      suppressHydrationWarning
       className={`${newsreader.variable} ${inter.variable} ${jetbrains.variable} h-full antialiased`}
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: modusSkript }} />
+      </head>
       {/* Die Startseite hat einen eigenen Fuß (id "startfuss"): Dann entfällt dieser schmale Fuß */}
       <body className="flex min-h-full flex-col [&>#startfuss~footer]:hidden">
         {children}
@@ -56,6 +62,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           >
             Vertrag zur Auftragsverarbeitung
           </Link>
+          <ModusSchalter />
         </footer>
       </body>
     </html>
