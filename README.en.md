@@ -15,6 +15,9 @@ Weekly check-ins for fitness coaches with their first clients. One link per clie
 
 [Try it out](#try-it-out) · [Tools](#tools-per-client) · [Privacy](#privacy--limits) · [Self-hosting](#self-hosting)
 
+
+<a href="https://wochenpuls.vercel.app/wochenpuls-demo.mp4"><img src=".github/readme/en/video.jpg" alt="Wochenpuls demo video: overview with traffic light, client detail page, client list and check-in on a phone (47 seconds, no sound, app interface in German)" width="720" /></a>
+
 </div>
 
 ---

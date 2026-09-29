@@ -15,6 +15,9 @@ Wöchentliche Check-ins für Fitness-Coaches mit ihren ersten Kunden. Ein Link p
 
 [Ausprobieren](#ausprobieren) · [Werkzeuge](#werkzeuge-pro-kunde) · [Datenschutz](#datenschutz--grenzen) · [Selbst betreiben](#selbst-betreiben)
 
+
+<a href="https://wochenpuls.vercel.app/wochenpuls-demo.mp4"><img src=".github/readme/video.jpg" alt="Demo-Video von Wochenpuls: Übersicht mit Ampel, Detailseite, Kundenliste und Check-in am Handy (47 Sekunden, ohne Ton)" width="720" /></a>
+
 </div>
 
 ---
