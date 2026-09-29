@@ -46,8 +46,45 @@
   --radius-panel: 12px;
 }
 
+/* "hell:" in Klassennamen greift nur im hellen Modus (z. B. hell:hidden) */
+@custom-variant hell (&:where([data-theme="light"], [data-theme="light"] *));
+
 html {
   color-scheme: dark;
+}
+
+/*
+  Heller Modus ("Papier"): dieselben Farbnamen, andere Werte. Umgeschaltet über data-theme am <html>,
+  siehe src/components/ModusSchalter.tsx. Alle Textfarben erreichen mindestens 4.5:1 Kontrast.
+*/
+html[data-theme="light"] {
+  color-scheme: light;
+
+  --color-leinwand: #f5f3ee;
+  --color-abschnitt: #eeebe4;
+  --color-flaeche: #fbfaf7;
+  --color-flaeche-hoch: #ffffff;
+  --color-flaeche-alt: #efece5;
+  --color-spur: #e2ded5;
+
+  --color-linie: rgb(25 28 26 / 0.1);
+  --color-linie-leise: rgb(25 28 26 / 0.05);
+  --color-linie-fokus: rgb(25 28 26 / 0.2);
+
+  --color-text: #191c1a;
+  --color-text-zwei: #4b514c;
+  --color-text-leise: #626862;
+
+  --color-akzent: #37705b;
+  --color-akzent-hover: #2f614e;
+  --color-auf-akzent: #ffffff;
+
+  --color-ampel-rot: #ad3d34;
+  --color-ampel-gelb: #8d5c14;
+  --color-ampel-gruen: #37705b;
+  --color-ampel-neu: #646a64;
+
+  --schatten-halo: 0 20px 48px -16px rgb(40 36 28 / 0.18), inset 0 1px 0 rgb(255 255 255 / 0.9);
 }
 
 body {
@@ -57,7 +94,7 @@ body {
 }
 
 ::selection {
-  background: rgb(141 184 166 / 0.25);
+  background: color-mix(in srgb, var(--color-akzent) 25%, transparent);
 }
 
 /* Tastatur-Fokus: salbeigrüner Rahmen, nur bei Tastaturbedienung */
@@ -68,9 +105,7 @@ body {
 
 /* Weicher Schatten für schwebende Fenster (Produkt-Vorschau, Formular-Rahmen) */
 @utility halo {
-  box-shadow:
-    0 20px 48px -12px rgb(0 0 0 / 0.7),
-    inset 0 1px 0 rgb(240 238 232 / 0.08);
+  box-shadow: var(--schatten-halo, 0 20px 48px -12px rgb(0 0 0 / 0.7), inset 0 1px 0 rgb(240 238 232 / 0.08));
 }
 
 /*
