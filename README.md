@@ -1,5 +1,7 @@
 <div align="center">
 
+**Deutsch** · [English](README.en.md)
+
 # Wochenpuls
 
 Wöchentliche Check-ins für Fitness-Coaches mit ihren ersten Kunden. Ein Link pro Kunde, ein kurzes Formular, eine Ampel für alle.
@@ -11,7 +13,7 @@ Wöchentliche Check-ins für Fitness-Coaches mit ihren ersten Kunden. Ein Link p
 ![Next.js 16](https://img.shields.io/badge/Next.js-16-lightgrey?style=for-the-badge)
 ![Firebase Auth und Firestore](https://img.shields.io/badge/Firebase-Auth%20%2B%20Firestore-lightgrey?style=for-the-badge)
 
-[Ausprobieren](#ausprobieren) · [Werkzeuge](#werkzeuge-pro-kunde) · [Datenschutz](#datenschutz--grenzen) · [Selbst betreiben](#selbst-betreiben) · [In English](#in-english)
+[Ausprobieren](#ausprobieren) · [Werkzeuge](#werkzeuge-pro-kunde) · [Datenschutz](#datenschutz--grenzen) · [Selbst betreiben](#selbst-betreiben)
 
 </div>
 
@@ -155,13 +157,7 @@ Entwickelt von [Frederik Schmidt](https://github.com/fxd-gif).
 
 ---
 
-## In English
-
-Wochenpuls is a small weekly check-in tool for fitness coaches who are just starting out. Each client gets a personal link (no login, no app) and fills out an eight-question form once a week, in about two minutes. The coach sees all clients on one page with a traffic-light indicator showing who needs attention, plus a detail page with history charts.
-
-Coaches sign in with Google; new coaches need an invitation code (free, handed out personally via [LinkedIn](https://www.linkedin.com/in/schmidt-frederik)). Per client there are a WhatsApp reminder, a weekly focus, private notes, a CSV export, link regeneration, archiving and deletion, up to 25 clients per coach. Clients consent before their first check-in and can withdraw at any time.
-
-Try the live demo with fictional clients at **[wochenpuls.vercel.app/demo](https://wochenpuls.vercel.app/demo)**, no sign-up needed. The interface is entirely in German. The project is open source under the MIT license; see [“Selbst betreiben” (self-hosting)](#selbst-betreiben) above. Anyone hosting it needs their own legal texts, since the privacy policy and data processing agreement name me as the operator.
+English version: [README.en.md](README.en.md)
 
 ---
 
