@@ -73,7 +73,7 @@ Wochenpuls ist bewusst schmal gehalten:
 - **Kein Tracking.** Es sind keine Analyse- oder Werbe-Skripte eingebaut.
 - **Datenbank nur vom Server aus.** Der Browser hat nie direkten Zugriff auf die Datenbank, alle Zugriffe laufen über den Server.
 - **Serverstandort Frankfurt.** Der Server läuft bei Vercel in Frankfurt (Region `fra1`, schon voreingestellt), die Datenbank ebenfalls, wenn du sie wie unten beschrieben in europe-west3 anlegst.
-- **Ein Coach-Passwort statt vieler Konten.** Der geschützte Bereich hat genau ein Passwort; für den Alltag eines einzelnen Coaches reicht das.
+- **Anmeldung mit Google, nur mit Einladung.** Coaches melden sich mit ihrem Google-Konto an. Neue Konten entstehen nur mit einem Einladungscode, jeder Coach sieht ausschließlich seine eigenen Kunden.
 - **Löschen jederzeit.** Kunden lassen sich archivieren (ihr Link ist dann gesperrt) oder endgültig löschen, samt aller Check-ins.
 
 Was es (noch) nicht gibt: Erinnerungen an Kunden, ein „Link neu erzeugen“ bei weitergegebenen Links, ein CSV-Export oder eine automatische Zusammenfassung der Woche.
@@ -87,12 +87,14 @@ Wochenpuls ist Open Source (MIT-Lizenz), du kannst es dir selbst aufsetzen. Eine
 3. **Dienstkonto-Schlüssel erzeugen**: In den Firebase-Projekteinstellungen unter „Dienstkonten“ auf „Neuen privaten Schlüssel generieren“ klicken. Das lädt eine JSON-Datei herunter, deren gesamter Inhalt später in eine Umgebungsvariable kommt. **Diese Datei ist geheim und darf niemals auf GitHub landen.**
 4. **Bei Vercel importieren**: dein geforktes Repository als neues Projekt importieren und dabei drei Umgebungsvariablen setzen:
    - `FIREBASE_SERVICE_ACCOUNT` – der komplette Inhalt der JSON-Datei aus Schritt 3
-   - `COACH_PASSWORD` – dein Passwort für den Coach-Bereich. Nimm ein langes (mindestens 12 Zeichen), denn es gibt keine Sperre nach Fehlversuchen.
-   - `SESSION_SECRET` – ein zufälliger Text mit mindestens 32 Zeichen, z. B. aus einem Passwort-Generator. Damit wird dein Login-Cookie unterschrieben.
+   - `NEXT_PUBLIC_FIREBASE_API_KEY`, `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`, `NEXT_PUBLIC_FIREBASE_PROJECT_ID` – aus den Firebase-Projekteinstellungen unter „Meine Apps“ → Web-App (die Werte `apiKey`, `authDomain`, `projectId`). Sie sind nicht geheim.
+   - `ADMIN_EMAIL` – deine Google-Adresse. Wer sich damit anmeldet, braucht keinen Code und kann Einladungscodes erzeugen.
+
+   Außerdem in Firebase unter „Authentication“ → „Anmeldemethode“ den Anbieter **Google** aktivieren und unter „Einstellungen“ → „Autorisierte Domains“ deine Vercel-Adresse eintragen.
 
    Setzt du die Variablen erst nachträglich, lös in Vercel danach einmal „Redeploy“ aus.
-5. **Prüfen**: `https://deine-adresse.vercel.app/status` öffnen. Beide Zeilen („Datenbank verbunden“ und „Coach-Login eingerichtet“) müssen „✓ Ja“ zeigen.
-6. **Loslegen**: unter `/login` anmelden (oder unten auf der Startseite auf „Coach-Login“), unter „Kunden“ den ersten Kunden anlegen und ihm seinen Link schicken.
+5. **Prüfen**: `https://deine-adresse.vercel.app/status` öffnen. Alle drei Zeilen müssen „✓ Ja“ zeigen.
+6. **Loslegen**: unter `/login` mit der Admin-Adresse anmelden, unter „Kunden“ den ersten Kunden anlegen und ihm seinen Link schicken. Unter „Codes“ erzeugst du Einladungen für weitere Coaches.
 
 Ab dann baut Vercel bei jedem Push automatisch neu.
 
@@ -105,7 +107,7 @@ Nein. Sie öffnen ihren persönlichen Link im Browser, wie eine ganz normale Web
 Dann springt seine Ampel automatisch auf Gelb und später auf Rot. Reicht er ihn bis Mittwoch nach dem fälligen Sonntag nach, zählt er trotzdem für diese Woche.
 
 **Kann ich das für mehrere Coaches nutzen?**
-Aktuell nicht. Es gibt genau ein Coach-Passwort für einen geschützten Bereich, das reicht für einen einzelnen Coach mit seinen Kunden.
+Ja. Jeder Coach meldet sich mit seinem eigenen Google-Konto an und sieht nur seine eigenen Kunden. Neue Coaches brauchen beim ersten Mal einen Einladungscode.
 
 **Ist das eine fertige, kommerzielle App?**
 Nein, es ist ein Portfolio-Projekt: klein, sauber und frei nutzbar zum Selbst-Betreiben. Einen fertigen Dienst zum Anmelden gibt es nicht.
@@ -151,7 +153,7 @@ npm install
 npm run dev
 ```
 
-Dann [http://localhost:3000](http://localhost:3000) öffnen. Für die volle Coach-Ansicht mit Datenbank werden die drei Umgebungsvariablen aus dem Abschnitt „Selbst betreiben“ benötigt (`FIREBASE_SERVICE_ACCOUNT`, `COACH_PASSWORD`, `SESSION_SECRET`). Lokal gehören sie in eine Datei `.env.local`, die Git ignoriert. Ohne sie funktioniert die Demo unter `/demo` trotzdem vollständig.
+Dann [http://localhost:3000](http://localhost:3000) öffnen. Für die volle Coach-Ansicht mit Datenbank werden die Umgebungsvariablen aus dem Abschnitt „Selbst betreiben“ benötigt (`FIREBASE_SERVICE_ACCOUNT`, die drei `NEXT_PUBLIC_FIREBASE_…`-Werte und `ADMIN_EMAIL`). Lokal gehören sie in eine Datei `.env.local`, die Git ignoriert. Ohne sie funktioniert die Demo unter `/demo` trotzdem vollständig.
 
 ### Tests
 

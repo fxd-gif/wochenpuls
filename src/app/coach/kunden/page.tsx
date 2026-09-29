@@ -5,8 +5,8 @@ import { alleKunden, alleTokens } from "@/lib/server/datenbank";
 import { kundeAnlegen, kundeArchivieren, kundeLoeschen } from "../aktionen";
 
 export default async function CoachKundenSeite() {
-  await anmeldungPruefen();
-  const [kunden, tokens, kopf] = await Promise.all([alleKunden(), alleTokens(), headers()]);
+  const coach = await anmeldungPruefen();
+  const [kunden, tokens, kopf] = await Promise.all([alleKunden(coach.uid), alleTokens(coach.uid), headers()]);
 
   // Persönliche Links mit der Adresse, unter der die Seite gerade läuft
   const adresse = `${kopf.get("x-forwarded-proto") ?? "https"}://${kopf.get("host")}`;

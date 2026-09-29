@@ -4,8 +4,8 @@ import { alleKunden, checkinsVon } from "@/lib/server/datenbank";
 import { berlinDatum } from "@/lib/woche";
 
 export default async function CoachUebersicht() {
-  await anmeldungPruefen();
-  const kunden = await alleKunden();
+  const coach = await anmeldungPruefen();
+  const kunden = await alleKunden(coach.uid);
   const checkins = await checkinsVon(kunden.filter((k) => !k.archiviert).map((k) => k.id));
   return <Uebersicht kunden={kunden} checkins={checkins} heute={berlinDatum()} basis="/coach" />;
 }

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { abmelden } from "@/app/login/aktionen";
 import { CoachKopf } from "@/components/coach/CoachKopf";
+import { NavLink } from "@/components/coach/NavLink";
 import { Hinweisseite } from "@/components/ui/Hinweisseite";
 import { anmeldungPruefen } from "@/lib/server/anmeldung";
 import { datenbankEingerichtet } from "@/lib/server/datenbank";
@@ -14,23 +15,26 @@ export const metadata: Metadata = {
 
 // Rahmen aller Coach-Seiten. Jede Seite prüft die Anmeldung zusätzlich selbst.
 export default async function CoachRahmen({ children }: LayoutProps<"/coach">) {
-  await anmeldungPruefen();
+  const coach = await anmeldungPruefen();
   return (
     <>
       <CoachKopf
         basis="/coach"
         etikett="Coach"
         extra={
-          <form action={abmelden}>
-            <button
-              type="submit"
-              className="flex min-h-11 min-w-11 items-center justify-center gap-1.5 rounded-subtil px-3 text-text-zwei transition-colors hover:bg-flaeche hover:text-text"
-            >
-              <LogOut size={15} strokeWidth={1.75} aria-hidden="true" />
-              <span className="hidden sm:inline">Abmelden</span>
-              <span className="sr-only sm:hidden">Abmelden</span>
-            </button>
-          </form>
+          <>
+            {coach.istAdmin && <NavLink href="/coach/einladungen">Codes</NavLink>}
+            <form action={abmelden}>
+              <button
+                type="submit"
+                className="flex min-h-11 min-w-11 items-center justify-center gap-1.5 rounded-subtil px-3 text-text-zwei transition-colors hover:bg-flaeche hover:text-text"
+              >
+                <LogOut size={15} strokeWidth={1.75} aria-hidden="true" />
+                <span className="hidden sm:inline">Abmelden</span>
+                <span className="sr-only sm:hidden">Abmelden</span>
+              </button>
+            </form>
+          </>
         }
       />
       {datenbankEingerichtet() ? (

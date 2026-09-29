@@ -2,32 +2,34 @@
 
 import { revalidatePath } from "next/cache";
 import { anmeldungPruefen } from "@/lib/server/anmeldung";
-import { legeKundeAn, loescheKunde, setzeArchiviert } from "@/lib/server/datenbank";
+import { legeKundeAn, loescheKunde, MAX_KUNDEN, setzeArchiviert } from "@/lib/server/datenbank";
 import { berlinDatum } from "@/lib/woche";
 
 // Server-Aktionen sind auch direkt per Anfrage erreichbar: deshalb prüft jede die Anmeldung selbst.
 
 export async function kundeAnlegen(_vorher: string | null, daten: FormData): Promise<string | null> {
-  await anmeldungPruefen();
+  const coach = await anmeldungPruefen();
   const name = String(daten.get("name") ?? "").trim();
   if (name.length < 1 || name.length > 30) return "Bitte einen Namen mit 1 bis 30 Zeichen eingeben.";
-  await legeKundeAn(name, berlinDatum());
+  if (!(await legeKundeAn(coach.uid, name, berlinDatum()))) {
+    return `Du hast schon ${MAX_KUNDEN} Kunden (archivierte zählen mit). Lösche einen archivierten Kunden, um Platz zu machen.`;
+  }
   revalidatePath("/coach", "layout");
   return null;
 }
 
 export async function kundeArchivieren(daten: FormData): Promise<void> {
-  await anmeldungPruefen();
+  const coach = await anmeldungPruefen();
   const id = String(daten.get("id") ?? "");
   if (!id) return;
-  await setzeArchiviert(id, daten.get("archiviert") === "ja");
+  await setzeArchiviert(id, coach.uid, daten.get("archiviert") === "ja");
   revalidatePath("/coach", "layout");
 }
 
 export async function kundeLoeschen(daten: FormData): Promise<void> {
-  await anmeldungPruefen();
+  const coach = await anmeldungPruefen();
   const id = String(daten.get("id") ?? "");
   if (!id) return;
-  await loescheKunde(id);
+  await loescheKunde(id, coach.uid);
   revalidatePath("/coach", "layout");
 }

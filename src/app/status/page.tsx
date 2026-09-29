@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { connection } from "next/server";
 import { Hinweisseite } from "@/components/ui/Hinweisseite";
-import { anmeldungEingerichtet } from "@/lib/server/anmeldung";
+import { adminEingerichtet, googleAnmeldungEingerichtet } from "@/lib/server/anmeldung";
 import { datenbankEingerichtet, verbindungOk } from "@/lib/server/datenbank";
 
 export const metadata: Metadata = {
@@ -19,9 +19,15 @@ export default async function StatusSeite() {
       hilfe: "FIREBASE_SERVICE_ACCOUNT fehlt oder ist ungültig.",
     },
     {
-      name: "Coach-Login eingerichtet",
-      ok: anmeldungEingerichtet(),
-      hilfe: "COACH_PASSWORD oder SESSION_SECRET fehlt.",
+      name: "Google-Anmeldung eingerichtet",
+      ok: googleAnmeldungEingerichtet(),
+      hilfe:
+        "NEXT_PUBLIC_FIREBASE_API_KEY, NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN oder NEXT_PUBLIC_FIREBASE_PROJECT_ID fehlt. Nach dem Eintragen bei Vercel neu deployen.",
+    },
+    {
+      name: "Admin festgelegt",
+      ok: adminEingerichtet(),
+      hilfe: "ADMIN_EMAIL fehlt (deine Google-Adresse).",
     },
   ];
 

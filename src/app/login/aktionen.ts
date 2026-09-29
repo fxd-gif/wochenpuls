@@ -1,15 +1,46 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { passwortStimmt, sitzungBeenden, sitzungStarten } from "@/lib/server/anmeldung";
+import { anmeldungEingerichtet, istAdminAdresse, sitzungBeenden, sitzungStarten } from "@/lib/server/anmeldung";
+import { anmeldeDienst, coachExistiert, legeCoachAn, loeseEinladungEin } from "@/lib/server/datenbank";
+import { berlinDatum } from "@/lib/woche";
 
-export async function anmelden(_vorher: string | null, daten: FormData): Promise<string | null> {
-  if (!passwortStimmt(String(daten.get("passwort") ?? ""))) {
-    // Vereinfachung: kurze Pause statt Sperre nach X Versuchen; Rate-Limit ergänzen, falls es echte Nutzer gibt
-    await new Promise((fertig) => setTimeout(fertig, 800));
-    return "Das Passwort stimmt nicht.";
+export type AnmeldeErgebnis = { fehler: string; codeNoetig?: boolean };
+
+// Der Browser hat sich bei Google angemeldet und schickt den Nachweis (ID-Token), dazu evtl. einen Einladungscode.
+export async function mitGoogleAnmelden(idToken: string, code: string): Promise<AnmeldeErgebnis> {
+  if (!anmeldungEingerichtet() || typeof idToken !== "string" || typeof code !== "string") {
+    return { fehler: "Die Anmeldung ist gerade nicht möglich. Bitte versuch es später noch einmal." };
   }
-  await sitzungStarten();
+
+  let konto;
+  try {
+    konto = await anmeldeDienst().verifyIdToken(idToken);
+  } catch {
+    return { fehler: "Die Anmeldung bei Google hat nicht geklappt. Bitte versuch es noch einmal." };
+  }
+  const email = konto.email ?? "";
+  const heute = berlinDatum();
+
+  let darfRein = await coachExistiert(konto.uid);
+  if (!darfRein && istAdminAdresse(email, konto.email_verified)) {
+    await legeCoachAn(konto.uid, email, heute);
+    darfRein = true;
+  }
+  if (!darfRein && code.trim()) {
+    darfRein = await loeseEinladungEin(code.slice(0, 20), konto.uid, email, heute);
+    if (!darfRein) {
+      return { fehler: "Dieser Einladungscode ist ungültig oder wurde schon benutzt.", codeNoetig: true };
+    }
+  }
+  if (!darfRein) {
+    return {
+      fehler: `Für ${email || "dieses Google-Konto"} gibt es noch kein Coach-Konto. Gib unten deinen Einladungscode ein und melde dich noch einmal an.`,
+      codeNoetig: true,
+    };
+  }
+
+  await sitzungStarten(idToken);
   redirect("/coach");
 }
 
